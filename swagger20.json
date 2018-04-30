@@ -32,9 +32,6 @@
             "schema" : {
               "$ref" : "#/definitions/customer"
             },
-            "examples" : {
-              "application/json" : "{\n        \"customerId\": \"01012149219\",\n        \"firstName\": \"Gunvor M E\",\n        \"lastName\": \"Mistereggen Dødsbo\",\n        \"countryTax\": [\n            {\n                \"taxLiabilityCountry\": \"\",\n                \"taxIdentificationNumber\": \"\"\n            }\n        ],\n        \"address\": {\n            \"addressLine1\": \"v/ Ragnar Olsen\",\n            \"addressLine2\": \"Landskronaveien 132\",\n            \"addressLine3\": \"\",\n            \"postalCodeName\": \"SKJETTEN\",\n            \"postalCode\": \"2013\",\n            \"postalAddressCountry\": \"NO\"\n        },\n        \"email\": \"nithin.nandan@gmail.com\",\n       \"phone\": \"+4762469137\",\n        \"countryOfBirth\": \"\",\n        \"citizenship\": [\n            {\n                \"countryOfCitizenship\": \"\"\n            }\n        ],\n        \"customerType\": \"PERSON\",\n        \"companyName\": null\n    }\n"
-            },
             "headers" : {
               "X-DNBAPI-JWT" : {
                 "type" : "string"
