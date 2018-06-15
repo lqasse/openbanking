@@ -2,7 +2,7 @@
   "swagger" : "2.0",
   "info" : {
     "description" : "**IMPORTANT:** This API specification is a work in progress. For the time being, it is not possible to make calls to the APIs, but you may set up your own mock server or similar. Please note that the final APIs may look different. Until there is an official release, these APIs should be seen as _unfinished drafts_. Having said this, the DNB Open Banking team would love to hear what you need and want from DNB, and you can contact us at developer@dnb.no.\n\n**General guidelines:**\n\n* We use camelCase, starting with lowercase: ```customerEngagement```, ```accountNumber```, ```creditCard```, etc.\n* Standards are mentioned and refered to, unless implicit by Swagger, \n* General rule: The response (object) determines endpoint: If the response is ```account```, the endpoint should be under ```/accounts```. In cases where this may be up for discussion, multiple endpoints may, for a limited time, be available in order to evaluate.\n* Versioning: Major.Minor.Patch (https://semver.org/). Major: Incompatible changes. Minor: New, backwards-compatible functionality. Patch: Backwards-compatible fixes. \n* Endpoints tagged with ```Draft``` have not been implemented, may not be implemented either. They are ideas that we would like feedback on. Requests typically return ```HTTP 501 Not Implemented``` and a ```notImplemented```response, as well as a standard ```error```.\n* Endpoints tagget with ```Sandbox``` are available in the Sandbox, but not in Production.\n* Operations tagget with ```Production``` are available in Production. The operation may be tagged with both ```Sandbox``` and ```Production```, indicating that it is available in both environments.\n* Some data objects refer to the DNB-internal \"Shared Service Layer\", and show the complete list of attributes available there. We want to simplify and hide internal complexity, but if the  list of properties in the current APIs are not sufficient, please let us know: developer@dnb.no. \n\n**Standards:**\n\nAll APIs use ISO and RFC standards:\n\n* Swagger specification: https://swagger.io/specification/\n* Country: ISO 3166-1 alpha-2: : https://www.iso.org/standard/63546.html (```NO```, ```GB```, ```US```)\n* Currency: ISO 4217: alpha 3-letter upcase: https://www.iso.org/iso-4217-currency-codes.html (```NOK```, ```EUR```, ```USD```)\n* Date: According to Swagger specification: ISO 8601:  www.iso.org/iso/home/standards/iso8601.htm (date: ```2018-12-31```, timestamp: ```2018-12-31T23:59:59+01:00```)\n* SWIFT BIC: ISO 9362: https://en.wikipedia.org/wiki/ISO_9362 (```DNBANOKKXXX```)\n* IBAN ISO 13616:2007: https://www.iso.org/standard/41031.html (```NO9386011117947```)\n* MCC: ISO 18245: https://www.iso.org/standard/33365.html (https://github.com/greggles/mcc-codes) (```3514: Hotels/Motels/Inns/Resorts```)\n\n**HTTP Response Codes**\n\nHTTP response are intended to be logical: If a ```customer```or an ```account``` does not exist, the response is ```404 Not Found```.  All errors return a relevant HTTP status code and response with an ``error`` containing additional details. The HTTP statuses returned are:\n\nSuccess\n\n* ```200: OK``` Success!   \n* ```201: Created``` Resource created. Reference included.\n* ```204: No Content``` Success - but no content returned   \n\nClient Error\n\n* ```400: Bad Request``` Your request was, somehow, not ok.  \n* ```401: Unauthorized``` You are unknown.   \n* ```403: Forbidden``` We know who you are, but you are attempting something you are not allowed to.  \n* ```404: Not Found``` What you looked for is not here.  \n* ```429: Too Many Requests``` Settle down!\n\nServer Error\n\n* ```500: Server Error``` We screwed up, sorry!\n* ```501: Not Implemented``` The operation is not (yet) implemented. \n* ```503: Service Unavailable``` Something is very wrong.\n* ```504: Timeout``` We need to speed up internally,  \n\n**Github**\n\nSwagger documentation is (for now) available on Github: https://github.com/DNBbank/openbanking\n\n**Contact DNB Open Banking**\n\nYou reach the entire team at developer@dnb.no. We do our best to reply as quickly as possible.\n\n\n",
-    "version" : "0.10.37",
+    "version" : "0.10.39",
     "title" : "DNB Developer APIs",
     "termsOfService" : "https://developer.dnb.no/#/termsofuse?pg=l",
     "contact" : {
@@ -139,7 +139,7 @@
         }
       },
       "patch" : {
-        "tags" : [ "Customers", "Draft" ],
+        "tags" : [ "Customers", "Draft", "Sandbox" ],
         "summary" : "Update customer",
         "operationId" : "updateCustomer",
         "consumes" : [ ],
@@ -173,7 +173,7 @@
     },
     "/accounts" : {
       "get" : {
-        "tags" : [ "Accounts" ],
+        "tags" : [ "Accounts", "Sandbox" ],
         "summary" : "Get account list for current user",
         "description" : "The customerId is included in the context object. ",
         "operationId" : "getAccountsForCurrentUser",
@@ -205,7 +205,7 @@
     },
     "/accounts/{accountNumber}" : {
       "get" : {
-        "tags" : [ "Accounts" ],
+        "tags" : [ "Accounts", "Sandbox" ],
         "summary" : "Get account details",
         "description" : "Returns an ```account```, which also has ```accountBalance```, ```accountDetails``` and ```accountInterestDetails```. ",
         "operationId" : "getAccountDetails",
@@ -257,7 +257,7 @@
     },
     "/accounts/{accountNumber}/balance" : {
       "get" : {
-        "tags" : [ "Accounts" ],
+        "tags" : [ "Accounts", "Sandbox" ],
         "summary" : "Get account balance",
         "operationId" : "getAccountBalance",
         "produces" : [ "application/json" ],
@@ -308,7 +308,7 @@
     },
     "/accounts/{accountNumber}/transactions" : {
       "get" : {
-        "tags" : [ "Accounts" ],
+        "tags" : [ "Accounts", "Sandbox" ],
         "summary" : "Get transactions for account",
         "description" : "**NOTE:** Duplicates endpoint in ```Transactions```. For evaluation purposes. May be restricted to only retrieve one month at a time.\n\nOptional query parameters below. Note: Sorting and filtering affects backend, and may change.\n\n* sortOrder: ```ASC```, ```DESC```\n* dateFrom: \"YYYY-MM-DD\": ISO 8601: www.iso.org/iso/home/standards/iso8601.htm\n* dateTo: \"YYYY-MM-DD\": ISO 8601: www.iso.org/iso/home/standards/iso8601.htm\n* amountMinimum: Include amount from (and including) this amount.\n* amountMaximum: Include amount from (and including) this amount.\n* mcc: Include only this MCC code: ISO 18245: https://www.iso.org/standard/33365.html \n* text: Filter by free text",
         "operationId" : "getAccountTransactions",
@@ -420,7 +420,7 @@
     },
     "/accounts/{accountNumber}/transactions/{transactionId}" : {
       "get" : {
-        "tags" : [ "Accounts" ],
+        "tags" : [ "Accounts", "Sandbox" ],
         "summary" : "Get transaction specified by id",
         "description" : "**NOTE:** May not be possible, as this is not implemented in the Open Layer yet. Duplicates endpoint in ```Transactions```. For evaluation purposes. ",
         "operationId" : "getAccountTransactionById",
@@ -478,7 +478,7 @@
     },
     "/accounts/{accountNumber}/payments/due" : {
       "get" : {
-        "tags" : [ "Accounts" ],
+        "tags" : [ "Accounts", "Sandbox" ],
         "summary" : "Get due payments for account",
         "operationId" : "getAccountPaymentsDue",
         "parameters" : [ {
@@ -534,7 +534,7 @@
     },
     "/accounts/{accountNumber}/payments/due/{paymentId}" : {
       "get" : {
-        "tags" : [ "Accounts" ],
+        "tags" : [ "Accounts", "Sandbox" ],
         "summary" : "Get details for a payment for an account",
         "operationId" : "getAccountPaymentDetailsById",
         "parameters" : [ ],
@@ -755,7 +755,7 @@
     },
     "/payments" : {
       "post" : {
-        "tags" : [ "Payments" ],
+        "tags" : [ "Payments", "Sandbox" ],
         "summary" : "Initiate payment",
         "description" : "Domestic payment with KID or message.\n\nAccepts a ```paymentInitiation``` POST, and returns HTTP 201 with the ```PaymentId``` of the successfully created ```payment```.\n\nExample code test:\n```\nPOST /payments HTTP/1.1\nAccept: application/json\nContent-Length: 219\nContent-Type: application/json\n\n{\n  \"type\": \"MESSAGE\",\n  \"debitAccountNumber\": \"12345678901\",\n  \"creditAccountNumber\": \"12345678902\",\n  \"amount\": \"2001.00\",\n  \"paymentDate\": \"2018-01-01\",\n  \"message\": \"Open the pod doors, HAL\",\n  \"initiator\": \"Dave\"\n}\n```\n\nResponse:\n```\nHTTP/1.1 201 Created\ndate: Thu, 22 Feb 2018 16:00:14 GMT, Thu, 22 Feb 2018 16:00:14 GMT\ncontent-type: application/json; charset=UTF-8\ncontent-length: 10\n\n1234567890\n```\n\n**Adding some dummy text to check rendering:** A ```payment``` is the trade of value from one party (such as a person or company) to another for goods, or services, or to fulfill a legal obligation.\n\nPayment can take a variety of forms. Barter, the exchange of one good or service for another, is a form ```payment```. The most common means of payment involve use of money, cheque, or debit, credit ```card```or bank transfers. Payments may also take complicated forms, such as stock issues or the transfer of anything of value or benefit to the parties. In US law, the payer is the party making a payment while the payee is the party receiving the payment. In trade, payments are frequentceded by an invoice or bill.\n\nIn general, the payee is at liberty to determine what method of payment he or she will accept; though normally laws require the payer to accept the country's legal tender up to a prescribed limit. Payment is most commonly effected in the local currency of the payee, unless if the parties agree otherwise. Payment in another currency involves an additional foreign exchange transaction. The payee may compromise on a debt, ie., accept a part ```payment``` in full settlement of a debtor's obligation, or may offer a discount, for example, for payment in cash, or for prompt payment, etc. On the other hand, the payee may impose a surcharge, for example, as a late payment fee, or for use of a certain credit ```card```, etc.\n\nThe acceptance of a payment by the payee extinguishes a debt or other obligation. A creditor cannot unreasonably refuse to accept a payment, but payment can be refused in some circumstances, for example, on a Sunday or outside banking ```openingTimes```. A payee is usually obligated to acknowledge payment by producing a receipt to the payer. A receipt may be an endorsement on an account as \"paid in full\". The giving of a guarantee or other security for a debt does not constitute a ```payment```.",
         "operationId" : "paymentInitiate",
@@ -805,7 +805,7 @@
     },
     "/payments/{paymentId}" : {
       "delete" : {
-        "tags" : [ "Payments" ],
+        "tags" : [ "Payments", "Sandbox" ],
         "summary" : "Delete payment by id",
         "operationId" : "deletePayment",
         "parameters" : [ ],
@@ -840,7 +840,7 @@
         }
       },
       "patch" : {
-        "tags" : [ "Payments" ],
+        "tags" : [ "Payments", "Sandbox" ],
         "summary" : "Update existing payment",
         "description" : "A ```payment``` can be updatet until due date:\n* Date \n* Amount\n* Status (deactivate, reactivate)\n\nReturns the updated ```payment```.",
         "operationId" : "updatePayment",
@@ -898,7 +898,7 @@
     },
     "/payments/{accountNumber}/due" : {
       "get" : {
-        "tags" : [ "Payments" ],
+        "tags" : [ "Payments", "Sandbox" ],
         "summary" : "Get due payments for an account",
         "description" : "Gets all due ```payment```s, both domestic and international.",
         "operationId" : "getPaymentsDue",
@@ -965,7 +965,7 @@
     },
     "/payments/{accountNumber}/due/{paymentId}" : {
       "get" : {
-        "tags" : [ "Payments" ],
+        "tags" : [ "Payments", "Sandbox" ],
         "summary" : "Get due payment by payment id",
         "description" : "Returns ```payment,``` complete with with ```paymentDetails```.\n\nThis endpoint may change, as it is offers the same as ```accounts/{accountNumber}/payments/due/{paymentId}```, and the placement is not decided yet.",
         "operationId" : "getPaymentDueById",
@@ -1018,7 +1018,7 @@
     },
     "/transactions/accounts/{accountNumber}" : {
       "get" : {
-        "tags" : [ "Transactions" ],
+        "tags" : [ "Transactions", "Sandbox" ],
         "summary" : "Get transactions for account",
         "description" : "**Note:** Duplicates ```Transactions```endpoint in ```Accounts```. For evaluation purposes. \n\nOptional query parameters below. Note: Sorting and filtering affects backend, and may change.\n\n* sortOrder: ```ASC```, ```DESC```\n* dateFrom: \"YYYY-MM-DD\": ISO 8601: www.iso.org/iso/home/standards/iso8601.htm\n* dateTo: \"YYYY-MM-DD\": ISO 8601: www.iso.org/iso/home/standards/iso8601.htm\n* amountMinimum: Include amount from (and including) this amount.\n* amountMaximum: Include amount from (and including) this amount.\n* mcc: Include only this MCC code: ISO 18245: https://www.iso.org/standard/33365.html \n* text: Filter by free text\n* status: ```BOOKED``` or ```RESERVED```",
         "operationId" : "gertTransactionsForAccount",
@@ -1143,7 +1143,7 @@
     },
     "/transactions/accounts/{accountNumber}/{transactionId}" : {
       "get" : {
-        "tags" : [ "Transactions" ],
+        "tags" : [ "Transactions", "Sandbox" ],
         "summary" : "Get transaction for account by transaction id",
         "description" : "**Note:** Duplicates ```Transactions```endpoint in ```Accounts```. For evaluation purposes. ",
         "operationId" : "gertTransactionForAccountById",
@@ -1204,7 +1204,7 @@
     },
     "/transactions/cards/{cardId}" : {
       "get" : {
-        "tags" : [ "Transactions" ],
+        "tags" : [ "Transactions", "Sandbox" ],
         "summary" : "Get transactions for credit card",
         "description" : "**Note:** Duplicates ```Transactions```endpoint in ```Cards```. For evaluation purposes. \n\nOptional query parameters below. Note: Sorting and filtering affects backend, and may change.\n\n* SortOrder: \"ASC\", \"DESC\"\n* DateFrom: \"YYYY-MM-DD\": ISO 8601: www.iso.org/iso/home/standards/iso8601.htm\n* DateTo: \"YYYY-MM-DD\": ISO 8601: www.iso.org/iso/home/standards/iso8601.htm\n* AmountMinimum: Include amount from (and including) this amount.\n* AmountMaximum: Include amount from (and including) this amount.\n* MCC: Include only this MCC code: ISO 18245: https://www.iso.org/standard/33365.html \n* FreeText: Filter by free text",
         "operationId" : "gertTransactionsForCard",
@@ -1313,7 +1313,7 @@
     },
     "/cards" : {
       "get" : {
-        "tags" : [ "Cards" ],
+        "tags" : [ "Cards", "Draft" ],
         "summary" : "Get cards for current customer",
         "description" : "List over the current ```customer```'s debet and credit cards. ",
         "operationId" : "getCardsForCurrentCustomer",
@@ -1358,7 +1358,7 @@
     },
     "/cards/{cardId}/balance" : {
       "get" : {
-        "tags" : [ "Cards" ],
+        "tags" : [ "Cards", "Draft" ],
         "summary" : "Get card balance",
         "parameters" : [ ],
         "responses" : {
@@ -1379,7 +1379,7 @@
     },
     "/cards/{cardId}/details" : {
       "get" : {
-        "tags" : [ "Cards" ],
+        "tags" : [ "Cards", "Draft" ],
         "summary" : "Get card details",
         "description" : "**NOTE:** May not be relevant, if \"Get cards for current customer\" returnes the same information, but for all the customer's cards.\n\nIncludes balance and credit limit (when applicable).",
         "operationId" : "getCardDetailsById",
@@ -1427,7 +1427,7 @@
     },
     "/cards/{cardId}/transactions" : {
       "get" : {
-        "tags" : [ "Cards" ],
+        "tags" : [ "Cards", "Draft" ],
         "summary" : "Get card transactions",
         "description" : "**Note:** Duplicates endpoint in ```Transactions```. For evaluation purposes. \n\nTransactionlist for the customers creditcard",
         "operationId" : "getCardTransactions",
@@ -1479,7 +1479,7 @@
     },
     "/cards/{cardId}/statement/{year}/{month}" : {
       "get" : {
-        "tags" : [ "Cards" ],
+        "tags" : [ "Cards", "Draft" ],
         "summary" : "Get card statement",
         "description" : "Get card statement for the specified month",
         "operationId" : "gertCardInvoice",
@@ -1541,7 +1541,7 @@
     },
     "/cards/{cardId}/block" : {
       "patch" : {
-        "tags" : [ "Cards" ],
+        "tags" : [ "Cards", "Draft" ],
         "summary" : "Block card",
         "description" : "Aviability for end-customet to block a debit or credit card. (Not Cresco Cards)",
         "operationId" : "blockCard",
@@ -1595,7 +1595,7 @@
     },
     "/cards/{cardId}/unblock" : {
       "patch" : {
-        "tags" : [ "Cards" ],
+        "tags" : [ "Cards", "Draft" ],
         "summary" : "Unblock card",
         "description" : "Unblock a blocked ```card```.",
         "operationId" : "unblockCard",
@@ -1640,7 +1640,7 @@
     },
     "/currencies/{toCurrency}/convert/{fromCurrency}/{amount}" : {
       "get" : {
-        "tags" : [ "Currencies" ],
+        "tags" : [ "Currencies", "Sandbox" ],
         "summary" : "Currency conversion",
         "description" : "Convert amount from CUR1 to CUR2. Quite basic for now. Input welcome.\n\nSources:\n* Daily updated foreign exchange rates: https://www.dnb.no/en/currencylist?la=EN&site=DNB_NO\n* CSV: https://www.dnb.no/portalfront/datafiles/miscellaneous/csv/kursliste.csv\n* XML: https://www.dnb.no/portalfront/datafiles/miscellaneous/csv/kursliste_ws.xml\n\n**NOTE**: The source data is based on NOK as the base currency. Because of this, one of the currencies (CUR1 or CUR2) _must be_ NOK. Conversion between any two currencies requires different source data, which is currently not available. ",
         "operationId" : "currencyConvert",
@@ -1710,7 +1710,7 @@
     },
     "/currencies/{toCurrency}" : {
       "get" : {
-        "tags" : [ "Currencies" ],
+        "tags" : [ "Currencies", "Sandbox" ],
         "summary" : "Get a currency rate list",
         "description" : "Returns a list of currency rates for the most common currencies, for the specified base currency. \n\n**NOTE**: The source data is based on NOK as the base currency. Any other base currency requires different source data, which is currently not available. ",
         "operationId" : "currencyList",
@@ -1772,7 +1772,7 @@
     },
     "/ideas/locations/branchesatms" : {
       "get" : {
-        "tags" : [ "Location" ],
+        "tags" : [ "Location", "Draft" ],
         "summary" : "Get .csv file with all DNB branches and ATMs",
         "description" : "**DRAFT IDEA:** This endpoint is not part of the initial release. Input appreciated: developer@dnb.no\n",
         "operationId" : "getBranchAtmFile",
@@ -1793,7 +1793,7 @@
     },
     "/locations/branches" : {
       "get" : {
-        "tags" : [ "Location" ],
+        "tags" : [ "Location", "Sandbox" ],
         "summary" : "Get list of all DNB branches",
         "operationId" : "listBranches",
         "parameters" : [ ],
@@ -1836,7 +1836,7 @@
     },
     "/locations/atms" : {
       "get" : {
-        "tags" : [ "Location" ],
+        "tags" : [ "Location", "Sandbox" ],
         "summary" : "Get list of all DNB ATMs",
         "operationId" : "listAtms",
         "parameters" : [ ],
@@ -1879,7 +1879,7 @@
     },
     "/locations/branches/coordinates" : {
       "get" : {
-        "tags" : [ "Location" ],
+        "tags" : [ "Location", "Sandbox" ],
         "summary" : "Find nearest branch by coordinates",
         "description" : "**NOTE:** Currently uses _aerial distance_ only, not distance using roads, etc.\n\nReturns an array of ```branches```, as there may be more than one branch that is \"the nearest\".",
         "operationId" : "findBranchByCoordinates",
@@ -1933,7 +1933,7 @@
     },
     "/locations/branch/findbyaddress" : {
       "get" : {
-        "tags" : [ "Location" ],
+        "tags" : [ "Location", "Sandbox" ],
         "summary" : "Find nearest branch by address",
         "description" : "**NOTE:** Not planned for the first phase. See ```/locations/branches``` and ```/locations/Atms```. Needs an ```address```(or smiliar data) as a ```POST``` request.\n\nReturns an array of ```branches```, as there may be more than one branch that is \"the nearest\".\n",
         "operationId" : "findBranchByAddress",
@@ -1983,7 +1983,7 @@
     },
     "/locations/branches/{branchid}" : {
       "get" : {
-        "tags" : [ "Location" ],
+        "tags" : [ "Location", "Sandbox" ],
         "summary" : "Get branch details",
         "description" : "Contact information, opening hours, etc for a specific branch. See ```/locations/branches``` for getting all ```branches``` and their ids.",
         "operationId" : "getBranchDetails",
@@ -2032,7 +2032,7 @@
     },
     "/locations/atms/coordinates" : {
       "get" : {
-        "tags" : [ "Location" ],
+        "tags" : [ "Location", "Sandbox" ],
         "summary" : "Find nearest ATM by coordinates",
         "description" : "**NOTE:** Currently uses _aerial distance_ only, not distance using roads, etc.\n\nReturns an array of ```atm```, as there may be more than one ATM that is \"the nearest\".",
         "operationId" : "findAtmByCoordinates",
