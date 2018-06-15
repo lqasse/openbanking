@@ -1763,7 +1763,7 @@
         "in" : "path",
         "required" : true,
         "type" : "string",
-        "description" : "ISO 4217: alpha 3-letter upcase e.g ```NOK```. This is the currency we are converting the amount _to_. \n\nThe response will contain a list of currency rates for various currencies, converted to the ```toCurrency```. If ```toCurrency```is ```NOK```, the list will contain a list of ```currencyRazte```s for ``ÈUR```, ```USD```, ```GBP```, etc converted into ```NOK```.",
+        "description" : "ISO 4217: alpha 3-letter upcase e.g ```NOK```. This is the currency we are converting the amount _to_. \n\nThe response will contain a list of currency rates for various currencies, converted to the ```toCurrency```. If ```toCurrency```is ```NOK```, the list will contain a list of ```currencyRate```s for ```EUR```, ```USD```, ```GBP```, etc converted into ```NOK```.",
         "default" : "NOK",
         "minLength" : 3,
         "maxLength" : 3,
