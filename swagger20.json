@@ -2755,6 +2755,20 @@
           "maxLength" : 3,
           "example" : "NOK"
         },
+        "baseCurrency" : {
+          "type" : "string",
+          "description" : "ISO 4217: alpha 3-letter upcase: https://www.iso.org/iso-4217-currency-codes.html"
+        },
+        "country" : {
+          "type" : "string",
+          "description" : "ISO 3166-1 alpha-2: https://www.iso.org/standard/63546.html",
+          "example" : "NO"
+        },
+        "updatedDate" : {
+          "type" : "string",
+          "format" : "date",
+          "description" : "The date for the last currency rate update."
+        },
         "unit" : {
           "type" : "string",
           "description" : "1 or 100?",
