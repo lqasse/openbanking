@@ -11,7 +11,7 @@
       "email" : "developer@dnb.no"
     }
   },
-  "host" : "developer-api-sandbox.dnb.no",
+  "host" : "developer-api-sandbox.dnb.no ",
   "schemes" : [ "https" ],
   "consumes" : [ "application/json" ],
   "produces" : [ "application/json" ],
@@ -844,6 +844,7 @@
       "get" : {
         "tags" : [ "Cards", "Draft" ],
         "summary" : "Get card balance",
+        "description" : "**Note:** This API endpoint is not yet available in our sandbox. We're working to get it out as soon as possible!\n\nReturns the balance of a card, if available.",
         "parameters" : [ ],
         "responses" : {
           "200" : {
@@ -865,7 +866,7 @@
       "get" : {
         "tags" : [ "Cards", "Draft" ],
         "summary" : "Get card details",
-        "description" : "**NOTE:** May not be relevant, if \"Get cards for current customer\" returnes the same information, but for all the customer's cards.\n\nIncludes balance and credit limit (when applicable).",
+        "description" : "**Note:** This API endpoint is not yet available in our sandbox. We're working to get it out as soon as possible!\n\nIncludes balance and credit limit (when applicable).",
         "operationId" : "getCardDetailsById",
         "parameters" : [ ],
         "responses" : {
@@ -909,63 +910,11 @@
         "x-example" : "12345678901"
       } ]
     },
-    "/cards/{cardId}/transactions" : {
-      "get" : {
-        "tags" : [ "Cards", "Draft" ],
-        "summary" : "Get card transactions",
-        "description" : "**Note:** Duplicates endpoint in ```Transactions```. For evaluation purposes. \n\nTransactionlist for the customers creditcard",
-        "operationId" : "getCardTransactions",
-        "produces" : [ "application/json" ],
-        "parameters" : [ ],
-        "responses" : {
-          "200" : {
-            "description" : "Request succeeded",
-            "schema" : {
-              "type" : "array",
-              "items" : {
-                "$ref" : "#/definitions/transaction"
-              }
-            }
-          },
-          "400" : {
-            "description" : "Bad Request",
-            "schema" : {
-              "$ref" : "#/definitions/error"
-            }
-          },
-          "401" : {
-            "description" : "Unauthorized",
-            "schema" : {
-              "$ref" : "#/definitions/error"
-            }
-          },
-          "403" : {
-            "description" : "Forbidden",
-            "schema" : {
-              "$ref" : "#/definitions/error"
-            }
-          },
-          "404" : {
-            "description" : "Not Found",
-            "schema" : {
-              "$ref" : "#/definitions/error"
-            }
-          }
-        }
-      },
-      "parameters" : [ {
-        "name" : "cardId",
-        "in" : "path",
-        "required" : true,
-        "type" : "string",
-        "x-example" : "12345678901"
-      } ]
-    },
     "/cards/{cardId}/statement/{year}/{month}" : {
       "get" : {
         "tags" : [ "Cards", "Draft" ],
         "summary" : "Get card statement",
-        "description" : "Get card statement for the specified month",
+        "description" : "**Note:** This API endpoint is not yet available in our sandbox. We're working to get it out as soon as possible!\n\nReturns the card statement for a specified month.",
         "operationId" : "gertCardInvoice",
         "parameters" : [ ],
         "responses" : {
@@ -1027,7 +976,7 @@
       "patch" : {
         "tags" : [ "Cards", "Draft" ],
         "summary" : "Block card",
-        "description" : "Aviability for end-customet to block a debit or credit card. (Not Cresco Cards)",
+        "description" : "**Note:** This API endpoint is not yet available in our sandbox. We're working to get it out as soon as possible!\n\nAbility for end-customet to block a debit or credit card (not including Cresco Cards).",
         "operationId" : "blockCard",
         "parameters" : [ ],
         "responses" : {
@@ -1081,7 +1030,7 @@
       "patch" : {
         "tags" : [ "Cards", "Draft" ],
         "summary" : "Unblock card",
-        "description" : "Unblock a blocked ```card```.",
+        "description" : "**Note:** This API endpoint is not yet available in our sandbox. We're working to get it out as soon as possible!\n\nUnblock a blocked ```card```.",
         "operationId" : "unblockCard",
         "parameters" : [ ],
         "responses" : {
@@ -2635,6 +2584,10 @@
         }
       },
       "description" : "Data object for physical location based on GPS coordinates. May be used for something that does not have a specific address, or somethjing that needs a more specific than an address provides, such as an ```ATM``` at a train station. A ```location``` may be used in addition to an ```address```.\n"
+    },
+    "Test customers and SSNs" : {
+      "type" : "string",
+      "description" : "The following ten test customers are available in our Sandbox:\n\n|  | SSN | Customer Name |\n| -------- | -------- | -------- |\n| 1. | 29105573083          | Liv Ødegård     |\n| 2. | 18052903871          | Astrid Ruud     |\n| 3. | 08096203957          | Thor Knudsen     |\n| 4. | 15025498515          | Øyvind Hansen     |\n| 5. | 15047232429          | Siri Strand     |\n| 6. | 01103068170          | John Aune     |\n| 7. | 22121810569          | Sverre Jørgensen    |\n| 8. | 15099564713          | Karl Myhre     |\n| 9. | 12034802382          | Dag Andreassen     |\n| 10. | 10016956239         | Camilla Andresen    |\n.\n\nThey have accounts, balances and due payments, so all they're looking for now is for someone play around with their data.\n\nTheir SSN's can be used when calling `Get API token`, to get a token in return associated with that customer only. Using this token when calling the other APIs will return data associated only with that given test customer.\n\n**Note**: These customers along with all their associated data are *entirely fictional*, generated from test scripts residing at https://github.com/DNBbank/dnbtestdata. If you'd like to improve the scripts, little makes us more happy than a pull request! \n\n"
     }
   }
 }
