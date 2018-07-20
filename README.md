@@ -1,7 +1,7 @@
+
 # 🥁 Please note 🥁
 
-**IMPORTANT:** This API specification is a work in progress. For the time being, it is not possible to make calls to the APIs, but you may set up your own mock server or similar. Please note that the final APIs may look different. Until there is an official release, these APIs should be seen as unfinished drafts. Having said this, the DNB Open Banking team would love to hear what you need and want from DNB, and you can contact us at developer@dnb.no.
+**IMPORTANT:** This API specification is a work in progress, so until there is an official release, please bear in mind that this spec might change and that we know this is far from perfect. Having said that, the DNB Developer team would love to hear your thoughts on it (after all, that's why we are publishing it). So feel free to reach out at developer@dnb.no.
 
 # DNB Developer
-
-https://developer.dnb.no
+For ability to test the APIs and play around in sandbox, head overto https://developer.dnb.no
