@@ -1,7 +1,7 @@
 {
   "swagger" : "2.0",
   "info" : {
-    "description" : "**IMPORTANT:** This API specification is a work in progress, so until there is an official release, please bear in mind that this spec might change. Having said that, the DNB Developer team would love to hear your thoughts on the current specification. After all, that is why we are publishing it! So feel free to contact us at developer@dnb.no. \n\n**Sandbox only:** \nNo APIs are currently publicly available in production - so all data returned from these endpoints are from a static sandbox environment containing *dummy data* only. We trying our best to get a dynamic sandbox and (of course) access to production available to you, but until then, enjoy the feeling of being able to initiate infinite payments without influencing your account balance.. \n\n**General guidelines:**\n* We use camelCase, starting with lowercase: ```customerEngagement```, ```accountNumber```, ```creditCard```, etc.\n* Standards are mentioned and refered to, unless implicit by Swagger.\n* General rule: The response (object) determines endpoint: If the response is ```account```, the endpoint should be under ```/accounts```. In cases where this may be up for discussion, multiple endpoints may, for a limited time, be available in order to evaluate.\n* Versioning: Major.Minor.Patch (https://semver.org/). Major: Incompatible changes. Minor: New, backwards-compatible functionality. Patch: Backwards-compatible fixes. \n\n**HTTP Response Codes:**\n\nHTTP response are intended to be logical: If a ```customer```or an ```account``` does not exist, the response is ```404 Not Found```.  All errors return a relevant HTTP status code and response with an ``error`` containing additional details. The HTTP statuses returned are:\n\nSuccess\n\n* ```200: OK``` Success!   \n* ```201: Created``` Resource created. Reference included.\n* ```204: No Content``` Success - but no content returned   \n\nClient Error\n\n* ```400: Bad Request``` Your request was, somehow, not ok.  \n* ```401: Unauthorized``` You are unknown.   \n* ```403: Forbidden``` We know who you are, but you are attempting something you are not allowed to.  \n* ```404: Not Found``` What you looked for is not here.  \n* ```429: Too Many Requests``` Settle down!\n\nServer Error\n\n* ```500: Server Error``` We screwed up, sorry!\n* ```501: Not Implemented``` The operation is not (yet) implemented. \n* ```503: Service Unavailable``` Something is very wrong.\n* ```504: Timeout``` We need to speed up internally!\n\n**Github**\n\nBoth our swagger documentation and the test data is available on Github: https://github.com/DNBbank/\n\n**Contact DNB Open Banking**\n\nYou reach the entire team at developer@dnb.no. We do our best to reply as quickly as possible, and would love to hear from you!\n\n\n",
+    "description" : "**IMPORTANT:** This API specification is a work in progress, so until there is an official release, please bear in mind that this spec might change. Having said that, the DNB Developer team would love to hear your thoughts on the current specification. After all, that is why we are publishing it! So feel free to contact us at developer@dnb.no. \n\n**Sandbox only:** \nNo APIs are currently publicly available in production - so all data returned from these endpoints are from a static sandbox environment containing *dummy data* only. We trying our best to get a dynamic sandbox and (of course) access to production available to you, but until then, enjoy the feeling of being able to initiate infinite payments without influencing your account balance.. Test customer SSNs can be found under `/testCustomers`.\n\n**General guidelines:**\n* We use camelCase, starting with lowercase: ```customerEngagement```, ```accountNumber```, ```creditCard```, etc.\n* Standards are mentioned and refered to, unless implicit by Swagger.\n* General rule: The response (object) determines endpoint: If the response is ```account```, the endpoint should be under ```/accounts```. In cases where this may be up for discussion, multiple endpoints may, for a limited time, be available in order to evaluate.\n* Versioning: Major.Minor.Patch (https://semver.org/). Major: Incompatible changes. Minor: New, backwards-compatible functionality. Patch: Backwards-compatible fixes. \n\n**Authorization**\nWe use AWS signatures for tokens, with AWS Region `eu-west-1`. You can read more about how it works at AWS's own docs: https://docs.aws.amazon.com/AmazonS3/latest/API/sig-v4-authenticating-requests.html.\n\n**HTTP Response Codes:**\n\nHTTP response are intended to be logical: If a ```customer```or an ```account``` does not exist, the response is ```404 Not Found```.  All errors return a relevant HTTP status code and response with an ``error`` containing additional details. The HTTP statuses returned are:\n\nSuccess\n\n* ```200: OK``` Success!   \n* ```201: Created``` Resource created. Reference included.\n* ```204: No Content``` Success - but no content returned   \n\nClient Error\n\n* ```400: Bad Request``` Your request was, somehow, not ok.  \n* ```401: Unauthorized``` You are unknown.   \n* ```403: Forbidden``` We know who you are, but you are attempting something you are not allowed to.  \n* ```404: Not Found``` What you looked for is not here.  \n* ```429: Too Many Requests``` Settle down!\n\nServer Error\n\n* ```500: Server Error``` We screwed up, sorry!\n* ```501: Not Implemented``` The operation is not (yet) implemented. \n* ```503: Service Unavailable``` Something is very wrong.\n* ```504: Timeout``` We need to speed up internally!\n\n**Github**\n\nBoth our swagger documentation and the test data is available on Github: https://github.com/DNBbank/\n\n**Contact DNB Open Banking**\n\nYou reach the entire team at developer@dnb.no. We do our best to reply as quickly as possible, and would love to hear from you!\n\n\n",
     "version" : "0.10.47",
     "title" : "DNB Developer APIs",
     "termsOfService" : "https://developer.dnb.no/#/termsofuse?pg=l",
@@ -20,7 +20,7 @@
       "get" : {
         "tags" : [ "Test_Customers", "Draft" ],
         "summary" : "Test Customers",
-        "description" : "**Note:** Currently not a functioning endpoint.\n\nThe are ten test customers are available in our Sandbox, with the following SSNs:\n\n|  | SSN | Customer Name |\n| -------- | -------- | -------- |\n| 1. | 29105573083          | Liv Ødegård     |\n| 2. | 18052903871          | Astrid Ruud     |\n| 3. | 08096203957          | Thor Knudsen     |\n| 4. | 15025498515          | Øyvind Hansen     |\n| 5. | 15047232429          | Siri Strand     |\n| 6. | 01103068170          | John Aune     |\n| 7. | 22121810569          | Sverre Jørgensen    |\n| 8. | 15099564713          | Karl Myhre     |\n| 9. | 12034802382          | Dag Andreassen     |\n| 10. | 10016956239         | Camilla Andresen    |\n\nThey have accounts, balances and due payments, so all they're looking for now is for someone play around with their data.\n\nTheir SSN's can be used when calling `Get API token`, to get a token in return associated with that customer only. Using this token when calling another APIs will return data associated only with that given test customer.\n\n**Note**: These customers along with all their associated data are *entirely fictional*, generated from test scripts residing at https://github.com/DNBbank/dnbtestdata. If you'd like to improve the scripts, little makes us more happy than a pull request! \n\n",
+        "description" : "**Note:** This is currently not a functioning endpoint - we're working on getting it up and running!\n\nThe are ten *completely fictitious* test customers are available in our Sandbox, with the following SSNs:\n|  | SSN | Customer Name |\n| -------- | -------- | -------- |\n| 1. | 29105573083          | Liv Ødegård     |\n| 2. | 18052903871          | Astrid Ruud     |\n| 3. | 08096203957          | Thor Knudsen     |\n| 4. | 15025498515          | Øyvind Hansen     |\n| 5. | 15047232429          | Siri Strand     |\n| 6. | 01103068170          | John Aune     |\n| 7. | 22121810569          | Sverre Jørgensen    |\n| 8. | 15099564713          | Karl Myhre     |\n| 9. | 12034802382          | Dag Andreassen     |\n| 10. | 10016956239         | Camilla Andresen    |\n\nEach customer have accounts, balances and due payments so now all they're looking for is someone who wants to play around with their data.\n\nUse one of these SSNs when calling `Get API token` to get a token in return associated with that customer only. Using this token when calling other APIs will return data for that given test customer.\n\n**Note**: These customers, along with all their associated data are *entirely fictitious* generated from test scripts residing at https://github.com/DNBbank/dnbtestdata. If you'd like to improve the scripts, nothing makes us more happy than a pull request! ",
         "produces" : [ "application/json" ],
         "parameters" : [ ],
         "responses" : {
@@ -36,11 +36,11 @@
         }
       }
     },
-    "/api/token" : {
+    "/api/token/{customerId}" : {
       "get" : {
         "tags" : [ "API", "Draft" ],
         "summary" : "Get API token",
-        "description" : "An API returning a token representing the end-consumer of the API.\n\nFor the sandbox, you need this token for calling the Customer, Accounts, Transactions and Payments APIs.\n\n**Note**: This will be replaced by another security mechanism in a future release.",
+        "description" : "An API returning a token representing the end-consumer of the API. In the sandbox, you need this token for calling the Customer, Accounts, Transactions and Payments APIs. Find customer SSNs under `/testCustomers`.\n\nWe use **AWS Signatures** for authentication. For more information on how that work, please refer to AWS's own documentation at https://docs.aws.amazon.com/AmazonS3/latest/API/sig-v4-authenticating-requests.html.",
         "operationId" : "getApiToken",
         "produces" : [ "application/json" ],
         "parameters" : [ {
@@ -77,7 +77,14 @@
             "description" : "Status 404"
           }
         }
-      }
+      },
+      "parameters" : [ {
+        "name" : "customerId",
+        "in" : "path",
+        "required" : true,
+        "type" : "string",
+        "x-example" : "{'type'='SSN','value'='29105573083'}"
+      } ]
     },
     "/customers/current" : {
       "get" : {
@@ -137,13 +144,12 @@
         }
       }
     },
-    "/accounts/{accountNumber}/balance" : {
+    "/accounts" : {
       "get" : {
         "tags" : [ "Accounts", "Sandbox" ],
-        "summary" : "Get account balance",
-        "description" : "This API returns the balance of an account.",
-        "operationId" : "getAccountBalance",
-        "produces" : [ "application/json" ],
+        "summary" : "Get account list",
+        "description" : "Returns the list of DNB accounts for the current customer. \n\nThe customerId is included in the context object. ",
+        "operationId" : "getAccountsForCurrentUser",
         "parameters" : [ {
           "name" : "x-dnbapi-jwt",
           "in" : "header",
@@ -159,47 +165,29 @@
         } ],
         "responses" : {
           "200" : {
-            "description" : "Request succeeded",
+            "description" : "Status 200",
             "schema" : {
-              "$ref" : "#/definitions/balance"
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/definitions/account"
+              }
             }
           },
           "400" : {
-            "description" : "Bad Request",
-            "schema" : {
-              "$ref" : "#/definitions/error"
-            }
-          },
-          "401" : {
-            "description" : "Unauthorized",
-            "schema" : {
-              "$ref" : "#/definitions/error"
-            }
-          },
-          "403" : {
-            "description" : "Forbidden",
+            "description" : "Status 400",
             "schema" : {
               "$ref" : "#/definitions/error"
             }
           },
           "404" : {
-            "description" : "Not Found",
+            "description" : "Status 404",
             "schema" : {
               "$ref" : "#/definitions/error"
             }
           }
-        }
-      },
-      "parameters" : [ {
-        "name" : "accountNumber",
-        "in" : "path",
-        "required" : true,
-        "type" : "string",
-        "minLength" : 11,
-        "maxLength" : 11,
-        "pattern" : "^\\d{11}$",
-        "x-example" : "12345678901"
-      } ]
+        },
+        "security" : [ ]
+      }
     },
     "/accounts/{accountNumber}" : {
       "get" : {
@@ -261,7 +249,8 @@
               "$ref" : "#/definitions/error"
             }
           }
-        }
+        },
+        "security" : [ ]
       },
       "parameters" : [ {
         "name" : "accountNumber",
@@ -274,12 +263,13 @@
         "x-example" : "12345678901"
       } ]
     },
-    "/accounts" : {
+    "/accounts/{accountNumber}/balance" : {
       "get" : {
         "tags" : [ "Accounts", "Sandbox" ],
-        "summary" : "Get account list for current user",
-        "description" : "Returns the list of DNB accounts for the current customer. \n\nThe customerId is included in the context object. ",
-        "operationId" : "getAccountsForCurrentUser",
+        "summary" : "Get account balance",
+        "description" : "This API returns the balance of an account.",
+        "operationId" : "getAccountBalance",
+        "produces" : [ "application/json" ],
         "parameters" : [ {
           "name" : "x-dnbapi-jwt",
           "in" : "header",
@@ -295,28 +285,48 @@
         } ],
         "responses" : {
           "200" : {
-            "description" : "Status 200",
+            "description" : "Request succeeded",
             "schema" : {
-              "type" : "array",
-              "items" : {
-                "$ref" : "#/definitions/account"
-              }
+              "$ref" : "#/definitions/balance"
             }
           },
           "400" : {
-            "description" : "Status 400",
+            "description" : "Bad Request",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "401" : {
+            "description" : "Unauthorized",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "403" : {
+            "description" : "Forbidden",
             "schema" : {
               "$ref" : "#/definitions/error"
             }
           },
           "404" : {
-            "description" : "Status 404",
+            "description" : "Not Found",
             "schema" : {
               "$ref" : "#/definitions/error"
             }
           }
-        }
-      }
+        },
+        "security" : [ ]
+      },
+      "parameters" : [ {
+        "name" : "accountNumber",
+        "in" : "path",
+        "required" : true,
+        "type" : "string",
+        "minLength" : 11,
+        "maxLength" : 11,
+        "pattern" : "^\\d{11}$",
+        "x-example" : "12345678901"
+      } ]
     },
     "/transactions/{accountNumber}/" : {
       "get" : {
@@ -520,26 +530,10 @@
       "get" : {
         "tags" : [ "Payments", "Sandbox" ],
         "summary" : "Get due payments for an account",
-        "description" : "A due payment is a `payment` that is scheduled to be deducted from an account. It can be changed untill its due date, by using update or delete payment\n\nThis API retrieves  all due ```payment```s from an account. You can specify the dates between which you want to retrieve due payments from.",
+        "description" : "A due payment is a `payment` scheduled to be deducted from an account in the future. It can be updated or deleted until its' due date.",
         "operationId" : "getPaymentsDue",
         "produces" : [ "application/json" ],
         "parameters" : [ {
-          "name" : "startDate",
-          "in" : "query",
-          "required" : false,
-          "type" : "string",
-          "format" : "date",
-          "description" : "Filter for start date (included).",
-          "x-example" : "2018-01-01"
-        }, {
-          "name" : "stopDate",
-          "in" : "query",
-          "required" : false,
-          "type" : "string",
-          "format" : "date",
-          "description" : "Filter for end date (included).",
-          "x-example" : "2018-12-31"
-        }, {
           "name" : "x-dnbapi-jwt",
           "in" : "header",
           "required" : true,
@@ -726,10 +720,22 @@
       "get" : {
         "tags" : [ "Cards", "draft" ],
         "summary" : "Get cards of current customer",
-        "description" : "Returns a list of all the credit and debit cards registere in DNB for the current customer.\n\n**Note**: This API is not yet available in our sandbox.",
+        "description" : "Returns a list of all the credit and debit cards registered in DNB for the current customer.\n\n**Note**: This API is not yet available in our sandbox - we are working to get it up and running as soon as possible.",
         "operationId" : "cards",
         "produces" : [ "application/json" ],
-        "parameters" : [ ],
+        "parameters" : [ {
+          "name" : "x-dnbapi-jwt",
+          "in" : "header",
+          "required" : true,
+          "type" : "string",
+          "description" : "The JWT generated from Get API Token"
+        }, {
+          "name" : "x-api-key",
+          "in" : "header",
+          "required" : true,
+          "type" : "string",
+          "description" : "The API key from your app page in DNB Developer"
+        } ],
         "responses" : {
           "200" : {
             "description" : "Request succeeded",
@@ -797,6 +803,7 @@
         "in" : "path",
         "required" : true,
         "type" : "string",
+        "description" : "The unique id of the card. Note that this is not the same as what is printed on a card, but an ID which can be fetched from Get card list.",
         "x-example" : "12345678901"
       } ]
     },
@@ -831,7 +838,8 @@
         "name" : "cardId",
         "in" : "path",
         "required" : true,
-        "type" : "string"
+        "type" : "string",
+        "description" : "The unique id of the card. Note that this is not the same as what is printed on a card, but an ID which can be fetched from Get card list."
       } ]
     },
     "/cards/{cardId}/transactions" : {
@@ -856,7 +864,8 @@
         "name" : "cardId",
         "in" : "path",
         "required" : true,
-        "type" : "string"
+        "type" : "string",
+        "description" : "The unique id of the card. Note that this is not the same as what is printed on a card, but an ID which can be fetched from Get card list."
       } ]
     },
     "/cards/{cardId}/statement/{year}/{month}" : {
@@ -880,7 +889,10 @@
         } ],
         "responses" : {
           "200" : {
-            "description" : "Request succeeded"
+            "description" : "Request succeeded",
+            "schema" : {
+              "$ref" : "#/definitions/cardStatement"
+            }
           },
           "400" : {
             "description" : "Bad Request",
@@ -934,7 +946,7 @@
       "patch" : {
         "tags" : [ "Cards", "Draft" ],
         "summary" : "Block card",
-        "description" : "**Note:** This API endpoint is not yet available in our sandbox. We're working to get it out as soon as possible!\n\nAbility for end-customet to block a debit or credit card (not including Cresco Cards).",
+        "description" : "**Note:** This API endpoint is not yet available in our sandbox. We're working to get it out as soon as possible!\n\nThis API enables the end-customer to block a debit or credit card (not including Cresco Cards). To block means to not stop payments of going through on a card.",
         "operationId" : "blockCard",
         "parameters" : [ {
           "name" : "x-dnbapi-jwt",
@@ -1000,7 +1012,7 @@
       "patch" : {
         "tags" : [ "Cards", "Draft" ],
         "summary" : "Unblock card",
-        "description" : "**Note:** This API endpoint is not yet available in our sandbox. We're working to get it out as soon as possible!\n\nUnblock a blocked ```card```.",
+        "description" : "**Note:** This API endpoint is not yet available in our sandbox. We're working to get it out as soon as possible!\n\nThis API enables the end-customer to unblock a card having a so-called \"soft block\", i.e. where `cardStatus` is `Blocked` and `unblockAllowed` is `true`. This will change that status of the card to `Unblocked`.",
         "operationId" : "unblockCard",
         "parameters" : [ {
           "name" : "x-dnbapi-jwt",
@@ -1933,41 +1945,95 @@
     },
     "account" : {
       "type" : "object",
-      "required" : [ "accountCurrency", "accountNumber", "accountOwnerName", "productName", "type" ],
       "properties" : {
-        "accountNumber" : {
+        "debetCardExists" : {
           "type" : "string",
-          "description" : "11 digits. Bank, etc can be determined from this: https://no.wikipedia.org/wiki/Kontonummer",
-          "minLength" : 11,
-          "maxLength" : 11,
-          "pattern" : "^\\d{11}$",
-          "example" : "12345678901"
+          "description" : "Whether the given account has an associated debet card",
+          "example" : "false"
         },
-        "productName" : {
-          "type" : "string"
-        },
-        "type" : {
+        "accountAlias" : {
           "type" : "string",
-          "description" : "Any type (category) of account.",
-          "default" : "DEPOSIT",
-          "enum" : [ "DEPOSIT", "CREDITCARD", "ASK", "BSU" ],
-          "example" : "DEPOSIT"
+          "description" : "The name of the account, set by the customer",
+          "example" : "'Savings for new car'"
         },
-        "accountName" : {
+        "accountOwnerPublicId" : {
           "type" : "string",
-          "description" : "Friendly name for the account:",
-          "example" : "Standard account"
+          "description" : "The SSN of the customer",
+          "example" : "12050166108"
         },
-        "accountOwnerName" : {
+        "inDefaultStatus" : {
           "type" : "string",
-          "example" : "Rahaman, Tuhina"
+          "description" : "Control flag"
+        },
+        "accountCategory" : {
+          "type" : "string",
+          "description" : "Category of account. Will be 'DEPOSIT' for debet accounts and 'LOAN' for credit accounts.",
+          "enum" : [ "DEPOSIT", "LOAN" ],
+          "example" : "'DEPOSIT'"
         },
         "accountCurrency" : {
           "type" : "string",
+          "description" : "Currency of the account defined by ISO 4217",
+          "default" : "NOK",
+          "minLength" : 3,
+          "maxLength" : 3,
           "example" : "NOK"
+        },
+        "withdrawalAllowed" : {
+          "type" : "string",
+          "description" : "Can this account be withdrawn money from?",
+          "example" : "'true'"
+        },
+        "accountNumber" : {
+          "type" : "string",
+          "description" : "The unique account number",
+          "minLength" : 11,
+          "maxLength" : 11,
+          "example" : "'29105573083'"
+        },
+        "productName" : {
+          "type" : "string",
+          "description" : "The type of account. Most common types include 'BRUKSKONTO', 'SPAREKONTO', 'BRUKSKONTO TILLEGG', 'RAMMELÅN', 'LÅN' and 'BSU'.",
+          "example" : "'BRUKSKONTO'"
+        },
+        "transferToAllowed" : {
+          "type" : "string",
+          "description" : "Can you transfer to this account?",
+          "default" : "true",
+          "example" : "true"
+        },
+        "paymentFromAllowed" : {
+          "type" : "string",
+          "description" : "Can you make a payment to another person from this account?",
+          "default" : "true",
+          "example" : "true"
+        },
+        "transferFromAllowed" : {
+          "type" : "string",
+          "description" : "Can you make a transfer among your own accounts from this account?",
+          "default" : "true",
+          "example" : "true"
+        },
+        "standingOrderExists" : {
+          "type" : "string",
+          "description" : "Is there a standing order (recurring payment) on this account?",
+          "default" : "false",
+          "example" : "false"
+        },
+        "countryOfAccountOwnerPublicId" : {
+          "type" : "string",
+          "description" : "Country of the owners public ID defined by ISO 3166-2",
+          "default" : "NO",
+          "example" : "NO"
+        },
+        "accountOwnerName" : {
+          "type" : "string",
+          "description" : "Name of the owner of the account",
+          "example" : "'Astrid Ruud'"
         }
       },
-      "description" : "Same ```account``` data object is used for all types of accounts. The ```type``` property determines the type. \n\nAn ```account``` may have ```accountDetails```, which may again have ```accountBalance``` and  ```accountInterestDetails```. \n\n**Format**\n\nA Norwegian ```account```has three groups: xxxx yy zzzzc. Excample: 8601 11 17947.\n\n* xxxx: Bank register number, identifying bank and branch. \n* yy: Account group. \n* zzzz: Customer account number.  \n* c: Control digit, modulo 11 with weight number 5432765432.\n\nMore details: https://www.ecbs.org/iban/norway-bank-account-number.html\n\n**INFO: Available data from Shared Service Layer:**\n\n```\n{\n\t\"accountNumber\": \"05390000000\",\n\t\"accountCategory\": \"\",\n\t\"productName\": \"\",\n\t\"accountAlias\": \"\",\n\t\"accountCurrency\": \"NOK\",\n\t\"accountOwnerId\": \"FX040827979925254X\",\n\t\"accountOwnerPublicId\": \"02116731128\",\n\t\"countryOfAccountOwnerPublicId\": \"NO\",\n\t\"accountOwnerName\": \"Nils Nilsen\",\n\t\"paymentFromAllowed\": true,\n\t\"transferFromAllowed\": true,\n\t\"transferToAllowed\": true,\n\t\"withdrawalAllowed\": true,\n\t\"standingOrderExists\": true,\n\t\"inDefaultStatus\": true,\n\t\"debetCardExists\": true\n}\n```"
+      "description" : "Same ```account``` data object is used for all types of accounts. The ```type``` property determines the type. \n\nAn ```account``` may have ```accountDetails```, which may again have ```accountBalance``` and  ```accountInterestDetails```. \n\n**Format**\n\nA Norwegian ```account```has three groups: xxxx yy zzzzc. Excample: 8601 11 17947.\n\n* xxxx: Bank register number, identifying bank and branch. \n* yy: Account group. \n* zzzz: Customer account number.  \n* c: Control digit, modulo 11 with weight number 5432765432.\n\nMore details: https://www.ecbs.org/iban/norway-bank-account-number.html\n",
+      "example" : "  {\r\n    \"debetCardExists\": \"false\",\r\n    \"accountAlias\": \"brukskonto\",\r\n    \"accountOwnerPublicId\": \"12050166108\",\r\n    \"inDefaultStatus\": \"false\",\r\n    \"accountCategory\": \"DEPOSIT\",\r\n    \"accountCurrency\": \"NOK\",\r\n    \"withdrawalAllowed\": \"true\",\r\n    \"accountNumber\": \"12047506532\",\r\n    \"productName\": \"BRUKSKONTO\",\r\n    \"transferToAllowed\": \"true\",\r\n    \"paymentFromAllowed\": \"true\",\r\n    \"transferFromAllowed\": \"true\",\r\n    \"standingOrderExists\": \"true\",\r\n    \"countryOfAccountOwnerPublicId\": \"NO\",\r\n    \"accountOwnerName\": \"Per Jensen\"\r\n  }"
     },
     "balance" : {
       "type" : "object",
@@ -2047,7 +2113,8 @@
           "example" : "DNB"
         }
       },
-      "description" : "The payment initiation object can be used for three types of payments, which should be specified in the ```type``` property:\n* ```KID```: The customer identification number specified by the recieving end, often described in the invioce. \n* ```MESSAGE```: A payment just having a text message attached with it.\n* ```TRANSFER```: A payment going between two DNB accounts having the same owner. \n\nNot including the \"straksbetaling\" (imediate payment) flag, as this will be the default.\n\nPayment initiator: Part of the context object, but kept here too for reference. "
+      "description" : "The payment initiation object can be used for three types of payments, which should be specified in the ```type``` property:\n* ```KID```: The customer identification number specified by the recieving end, often described in the invioce. \n* ```MESSAGE```: A payment just having a text message attached with it.\n* ```TRANSFER```: A payment going between two DNB accounts having the same owner. \n\nNot including the \"straksbetaling\" (imediate payment) flag, as this will be the default.\n\nPayment initiator: Part of the context object, but kept here too for reference. ",
+      "example" : "{\n\"paymentId\":\"\",\n\"paymentType\":\"\",\n\"debitAccountNumber\":\"05390000000\",\n\"creditAccountNumber\":\"05390000001\",\n\"message\":\"This is a payment\",\n\"kid\":\"\",\n\"requestedExecutionDate\":\"2017-04-11\",\n\"country\":\"NO\",\n\"currency\":\"NOK\",\n\"amount\":\"125.00\",\n\"onBehalfOf\":\"\",\n\"immediatePayment\":false,\n\"dataSource\":\"0513\",\n\"lastChanged\":\"2014-08-01 16:41:09\",\n\"created\":\"2001-03-01 11:32:09\"\n  }"
     },
     "paymentDetails" : {
       "type" : "object",
@@ -2103,7 +2170,138 @@
       "description" : "**NOTE:** May be completely merged with ```transaction```.\n\nA ```payment``` is a planned payment/transaction that has not yet been carried out.\n\nTODO: There is no ```message```or ```kid```, as in ```paymentInitiation```and ```transaction```. Check this.\n\nDetails about a payment. Used by:\n* /payments/due/{accountNumber}: Returning a list of payments, with _empty_ PaymentDetails\n* /payments/due/{accountNumber}/details: Returning a list of payments, with PaymentDetails\n\n"
     },
     "card" : {
-      "type" : "object"
+      "type" : "object",
+      "required" : [ "accountNumber", "cardHolderName", "cardId", "cardStatus", "cardType", "customerId", "maskedCardNumber" ],
+      "properties" : {
+        "cardId" : {
+          "type" : "string",
+          "description" : "The ID of the card"
+        },
+        "maskedCardNumber" : {
+          "type" : "string",
+          "description" : "The masked card number (what's printed on your actual card), but only displaying the four last digits.",
+          "example" : "xxxx-xxxx-xxxx-1234"
+        },
+        "customerId" : {
+          "type" : "string",
+          "description" : "The id of the card holder"
+        },
+        "cardHolderName" : {
+          "type" : "string",
+          "description" : "The name of the card holder"
+        },
+        "cardType" : {
+          "type" : "string",
+          "description" : "The type of card",
+          "default" : "DEBIT",
+          "enum" : [ "DEBIT", "CREDIT" ],
+          "example" : "DEBIT"
+        },
+        "productName" : {
+          "type" : "string",
+          "description" : "The product group of the card"
+        },
+        "accountNumber" : {
+          "type" : "string",
+          "description" : "The account number that the card is linked to",
+          "minLength" : 11,
+          "maxLength" : 11,
+          "example" : "12345678901"
+        },
+        "cardStatus" : {
+          "type" : "string",
+          "description" : "The status of the card",
+          "default" : "ACTIVE",
+          "enum" : [ "ACTIVE", "NOTACTIVE", "BLOCKED" ],
+          "example" : "ACTIVE"
+        },
+        "blockingInfo" : {
+          "required" : [ "performedBy", "unblockAllowed" ],
+          "type" : "object",
+          "properties" : {
+            "performedBy" : {
+              "type" : "string",
+              "description" : "Who made the change (B - bank/C - customer)",
+              "enum" : [ "B", "C" ],
+              "example" : "B (bank)"
+            },
+            "timestamp" : {
+              "type" : "string",
+              "description" : "Timestamp of the action performed as defined by ISO 8601",
+              "example" : "2017-03-01 11:32:09"
+            },
+            "blockAllowed" : {
+              "type" : "boolean",
+              "description" : "Can the card be blocked by the customer?"
+            },
+            "unblockAllowed" : {
+              "type" : "boolean",
+              "description" : "Can the card be unblocked by the customer?"
+            }
+          }
+        },
+        "debitBalance" : {
+          "type" : "string",
+          "description" : "The debit balance on the card"
+        },
+        "creditBalance" : {
+          "type" : "string",
+          "description" : "The available credit balance of the card"
+        },
+        "created" : {
+          "type" : "string",
+          "description" : "When was the card created?",
+          "example" : "2017-03-01 11:32:09"
+        },
+        "lastChanged" : {
+          "type" : "string",
+          "description" : "When was the last change on the card",
+          "example" : "2017-03-01 11:32:09"
+        }
+      },
+      "example" : "{\r\n    \"cardId\": \"\",\r\n    \"maskedCardNumber\": \"xxxx-xxxx-xxxx-1234\",\r\n    \"customerId\": \"FX040827979925254X\",\r\n    \"cardHolderName\": \"Morten Nilsen\",\r\n    \"cardType\": \"Debit\",\r\n    \"productName\": \"\",\r\n    \"accountNumber\": \"05390000001\",\r\n    \"cardStatus\": \"Blocked\",\r\n    \"blockingInfo\": {\r\n        \"performedBy\": \"B - Bank\",\r\n        \"timestamp\": \"2017-03-01 11:32:09\",\r\n        \"blockAllowed\": true,\r\n\t\t\"unblockAllowed\": true\r\n    },\r\n    \"debitBalance\": \"00.00\",\r\n    \"creditBalance\": \"00.00\",\r\n    \"created\": \"2001-03-08 12:00:00\",\r\n    \"lastChanged\": \"2014-11-08 12:00:00\"\r\n}"
+    },
+    "cardStatement" : {
+      "type" : "object",
+      "properties" : {
+        "statementId" : {
+          "type" : "string"
+        },
+        "accountNumber" : {
+          "type" : "string"
+        },
+        "currency" : {
+          "type" : "string"
+        },
+        "openingBalance" : {
+          "type" : "number"
+        },
+        "closingBalance" : {
+          "type" : "number"
+        },
+        "minimumDueAmount" : {
+          "type" : "number"
+        },
+        "billingDate" : {
+          "type" : "string"
+        },
+        "statementGeneratedDate" : {
+          "type" : "string"
+        },
+        "dueDate" : {
+          "type" : "string"
+        },
+        "currentClosingBalance" : {
+          "type" : "number"
+        },
+        "instalmentAccountBalance" : {
+          "type" : "number"
+        },
+        "totalOutstandingBalance" : {
+          "type" : "number"
+        }
+      },
+      "example" : "\r\n{\r\n\t\"statementId\": \"1234\",\r\n\t\"accountNumber\": \"05390000000\",\r\n\t\"currency\": \"NOK\",\r\n\t\"openingBalance\": 100.00,\r\n\t\"closingBalance\": 100.00,\r\n\t\"minimumDueAmount\": 100.00,\r\n\t\"billingDate\": \"2016-02-28\",\r\n\t\"statementGeneratedDate\": \"2016-02-28\",\r\n\t\"dueDate\": \"2016-02-28\",\r\n\t\"currentClosingBalance\": 100.00,\r\n\t\"instalmentAccountBalance\": 100.00,\r\n\t\"totalOutstandingBalance\": 100\r\n}"
     },
     "currencyRate" : {
       "type" : "object",
