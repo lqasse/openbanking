@@ -20,7 +20,7 @@
       "get" : {
         "tags" : [ "Test_Customers", "Draft" ],
         "summary" : "Test Customers",
-        "description" : "**Note:** This is currently not a functioning endpoint - we're working on getting it up and running!\n\nThe are ten *completely fictitious* test customers are available in our Sandbox, with the following SSNs:\n|  | SSN | Customer Name |\n| -------- | -------- | -------- |\n| 1. | 29105573083          | Liv Ødegård     |\n| 2. | 18052903871          | Astrid Ruud     |\n| 3. | 08096203957          | Thor Knudsen     |\n| 4. | 15025498515          | Øyvind Hansen     |\n| 5. | 15047232429          | Siri Strand     |\n| 6. | 01103068170          | John Aune     |\n| 7. | 22121810569          | Sverre Jørgensen    |\n| 8. | 15099564713          | Karl Myhre     |\n| 9. | 12034802382          | Dag Andreassen     |\n| 10. | 10016956239         | Camilla Andresen    |\n\nEach customer have accounts, balances and due payments so now all they're looking for is someone who wants to play around with their data.\n\nUse one of these SSNs when calling `Get API token` to get a token in return associated with that customer only. Using this token when calling other APIs will return data for that given test customer.\n\n**Note**: These customers, along with all their associated data are *entirely fictitious* generated from test scripts residing at https://github.com/DNBbank/dnbtestdata. If you'd like to improve the scripts, nothing makes us more happy than a pull request! ",
+        "description" : "The are ten *completely fictitious* test customers are available in our Sandbox, with the following SSNs:\n\n**Note:** This is currently not a functioning endpoint - we're working on getting it up and running!\n\n|  | SSN | Customer Name |\n| -------- | -------- | -------- |\n| 1. | 29105573083          | Liv Ødegård     |\n| 2. | 18052903871          | Astrid Ruud     |\n| 3. | 08096203957          | Thor Knudsen     |\n| 4. | 15025498515          | Øyvind Hansen     |\n| 5. | 15047232429          | Siri Strand     |\n| 6. | 01103068170          | John Aune     |\n| 7. | 22121810569          | Sverre Jørgensen    |\n| 8. | 15099564713          | Karl Myhre     |\n| 9. | 12034802382          | Dag Andreassen     |\n| 10. | 10016956239         | Camilla Andresen    |\n\nEach customer have accounts, balances and due payments so now all they're looking for is someone who wants to play around with their data.\n\nUse one of these SSNs when calling `Get API token` to get a token in return associated with that customer only. Using this token when calling other APIs will return data for that given test customer.\n\n**Note**: These customers, along with all their associated data are *entirely fictitious* generated from test scripts residing at https://github.com/DNBbank/dnbtestdata. If you'd like to improve the scripts, nothing makes us more happy than a pull request! ",
         "produces" : [ "application/json" ],
         "parameters" : [ ],
         "responses" : {
@@ -36,11 +36,11 @@
         }
       }
     },
-    "/api/token/{customerId}" : {
+    "/api/token/" : {
       "get" : {
         "tags" : [ "API", "Draft" ],
         "summary" : "Get API token",
-        "description" : "An API returning a token representing the end-consumer of the API. In the sandbox, you need this token for calling the Customer, Accounts, Transactions and Payments APIs. Find customer SSNs under `/testCustomers`.\n\nWe use **AWS Signatures** for authentication. For more information on how that work, please refer to AWS's own documentation at https://docs.aws.amazon.com/AmazonS3/latest/API/sig-v4-authenticating-requests.html.",
+        "description" : "An API returning a JWT token representing the end-consumer of the API. In the sandbox, you need this token for calling the Customer, Accounts, Transactions and Payments APIs. Find customer SSNs under `/testCustomers`.\n\nWe use **AWS Signatures** for authorization. For more information on how that work, please refer to AWS's own documentation at https://docs.aws.amazon.com/AmazonS3/latest/API/sig-v4-authenticating-requests.html.",
         "operationId" : "getApiToken",
         "produces" : [ "application/json" ],
         "parameters" : [ {
@@ -48,8 +48,8 @@
           "in" : "query",
           "required" : true,
           "type" : "string",
-          "description" : "One or more SSNs of the customer to obtain token(s) for. Multiple SSNs to be specified as comma separated list without whitespace.",
-          "x-example" : "{\"type\":\"SSN\", \"value\":\"29105573083\"}"
+          "description" : "One or more SSNs of the customer to obtain token(s) for. Multiple SSNs to be specified as comma separated list without whitespace.\nExample: /api/token?customerId={type:'SSN', value:'4238934242'}",
+          "x-example" : "{type:'SSN', value:'4238934242'}"
         }, {
           "name" : "x-api-key",
           "in" : "header",
@@ -77,14 +77,7 @@
             "description" : "Status 404"
           }
         }
-      },
-      "parameters" : [ {
-        "name" : "customerId",
-        "in" : "path",
-        "required" : true,
-        "type" : "string",
-        "x-example" : "{'type'='SSN','value'='29105573083'}"
-      } ]
+      }
     },
     "/customers/current" : {
       "get" : {
@@ -411,6 +404,68 @@
         "x-example" : "12345678901"
       } ]
     },
+    "/payments" : {
+      "post" : {
+        "tags" : [ "Payments", "Sandbox" ],
+        "summary" : "Initiate payment",
+        "description" : "Initiate a domestic payment going directly from a DNB account with KID or message. Also allows for transfers (payments between accounts held by the same owner). The recieving account can be in whichever bank, but for domestic payments it has to be a Norwegian one.\n\nAccepts a ```paymentInitiation``` POST, and returns HTTP 201 with the ```PaymentId``` of the successfully created ```payment```.\n\n*Note: As our sandbox is currently static, initiating payments unfortuntately won't reflect in neither the balance nor lastest transactions of the account. While we are working hard to get you a dynamic sandbox, you may in the meanwhile look at it as finally having that infinite account never getting affected by your purchases.*",
+        "operationId" : "paymentInitiate",
+        "consumes" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "x-dnbapi-jwt",
+          "in" : "header",
+          "required" : true,
+          "type" : "string",
+          "description" : "The JWT Token generated from Get API Token"
+        }, {
+          "name" : "x-api-key",
+          "in" : "header",
+          "required" : true,
+          "type" : "string",
+          "description" : "The API key from your app page in DNB Developer"
+        }, {
+          "name" : "body",
+          "in" : "body",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/paymentInitiation"
+          }
+        } ],
+        "responses" : {
+          "201" : {
+            "description" : "Created",
+            "schema" : {
+              "type" : "object",
+              "description" : "Returning id of the new payment",
+              "properties" : {
+                "paymentId" : {
+                  "type" : "string",
+                  "example" : "12345"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad Request",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "401" : {
+            "description" : "Unauthorized",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "403" : {
+            "description" : "Forbidden",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          }
+        }
+      }
+    },
     "/payments/{paymentId}" : {
       "delete" : {
         "tags" : [ "Payments", "Sandbox" ],
@@ -654,68 +709,6 @@
         "type" : "string"
       } ]
     },
-    "/payments" : {
-      "post" : {
-        "tags" : [ "Payments", "Sandbox" ],
-        "summary" : "Initiate payment",
-        "description" : "Initiate a domestic payment going directly from a DNB account with KID or message. Also allows for transfers (payments between accounts held by the same owner). The recieving account can be in whichever bank, but for domestic payments it has to be a Norwegian one.\n\nAccepts a ```paymentInitiation``` POST, and returns HTTP 201 with the ```PaymentId``` of the successfully created ```payment```.\n\n*Note: As our sandbox is currently static, initiating payments unfortuntately won't reflect in neither the balance nor lastest transactions of the account. While we are working hard to get you a dynamic sandbox, you may in the meanwhile look at it as finally having that infinite account never getting affected by your purchases.*",
-        "operationId" : "paymentInitiate",
-        "consumes" : [ "application/json" ],
-        "parameters" : [ {
-          "name" : "x-dnbapi-jwt",
-          "in" : "header",
-          "required" : true,
-          "type" : "string",
-          "description" : "The JWT Token generated from Get API Token"
-        }, {
-          "name" : "x-api-key",
-          "in" : "header",
-          "required" : true,
-          "type" : "string",
-          "description" : "The API key from your app page in DNB Developer"
-        }, {
-          "name" : "body",
-          "in" : "body",
-          "required" : true,
-          "schema" : {
-            "$ref" : "#/definitions/paymentInitiation"
-          }
-        } ],
-        "responses" : {
-          "201" : {
-            "description" : "Created",
-            "schema" : {
-              "type" : "object",
-              "description" : "Returning id of the new payment",
-              "properties" : {
-                "paymentId" : {
-                  "type" : "string",
-                  "example" : "12345"
-                }
-              }
-            }
-          },
-          "400" : {
-            "description" : "Bad Request",
-            "schema" : {
-              "$ref" : "#/definitions/error"
-            }
-          },
-          "401" : {
-            "description" : "Unauthorized",
-            "schema" : {
-              "$ref" : "#/definitions/error"
-            }
-          },
-          "403" : {
-            "description" : "Forbidden",
-            "schema" : {
-              "$ref" : "#/definitions/error"
-            }
-          }
-        }
-      }
-    },
     "/cards" : {
       "get" : {
         "tags" : [ "Cards", "draft" ],
@@ -830,32 +823,6 @@
             "description" : "Status 200",
             "schema" : {
               "$ref" : "#/definitions/balance"
-            }
-          }
-        }
-      },
-      "parameters" : [ {
-        "name" : "cardId",
-        "in" : "path",
-        "required" : true,
-        "type" : "string",
-        "description" : "The unique id of the card. Note that this is not the same as what is printed on a card, but an ID which can be fetched from Get card list."
-      } ]
-    },
-    "/cards/{cardId}/transactions" : {
-      "get" : {
-        "tags" : [ "cards", "draft" ],
-        "summary" : "Get credit card transactions",
-        "description" : "Returns the list of transactions on a credit card",
-        "parameters" : [ ],
-        "responses" : {
-          "200" : {
-            "description" : "Success!",
-            "schema" : {
-              "type" : "array",
-              "items" : {
-                "$ref" : "#/definitions/transaction"
-              }
             }
           }
         }
@@ -1559,181 +1526,8 @@
           "description" : "The SSN of a test customer",
           "example" : "29105573083"
         }
-      }
-    },
-    "error" : {
-      "type" : "object",
-      "properties" : {
-        "errorDocumentation" : {
-          "type" : "string",
-          "description" : "URI to developer documentation for this error.",
-          "example" : "https://developer.dnb.no/something-useful-goes-here/"
-        },
-        "errorDetails" : {
-          "type" : "array",
-          "description" : "Details about the cause of this error (or errors). May contain information about an invalid parameter, or another specific problem.",
-          "items" : {
-            "type" : "object",
-            "properties" : {
-              "errorNumber" : {
-                "type" : "integer"
-              },
-              "errorField" : {
-                "type" : "string",
-                "description" : "Error cause. Not yet implemented.",
-                "example" : "accountNumber"
-              },
-              "errorDetailsDescription" : {
-                "type" : "string",
-                "description" : "Error cause. Not yet implemented.",
-                "example" : "accountNumber must be digits only"
-              }
-            }
-          }
-        }
       },
-      "description" : "The HTTP status code (```httpStatus```) is the main classifier. A DNB-specific ```errorNumber```is also provided as a lookup reference. \n\nThe ```errorDocumentation``` is a URI to further information about the endpoint, with uesful infomration about correct usage.\n\nThe ```errorDetails```is specific information about the one or more errors that have occurred.\n\n**Note:** We strive to offer the best possible information about all errors. This depends on the information offered by the backend systems, and in some cases there is limited information available from the underlying solutions. In these cases, the errors may contain empty fields, and/or information that is difficult to interpret. In cases where the error information needs improvement, please let us know: developer@dnb.no. \n\nExample ```error``` (TODO: Work in progress: May need an update):\n```\n{\n  \"errorDocumentation\": \"https://developer.dnb.no/something-useful-goes-here/\",\n  \"errorDetails\": [\n    {\n      \"errorNumber\": \"123450\",\n      \"errorField\": \"accountNumber\",\n      \"errorDescription\": \"accountNumber must be digits only\"\n    },\n    {\n      \"errorNumber\": \"123451\",\n      \"errorField\": \"dateFrom\",\n      \"errorDescription\": \"dateFrom must be in ISO8601 date format\"\n    }\n  ]\n}\n```"
-    },
-    "headerLinks" : {
-      "type" : "object",
-      "required" : [ "first", "self" ],
-      "properties" : {
-        "first" : {
-          "type" : "string",
-          "example" : "https://api.example.com/something-first"
-        },
-        "self" : {
-          "type" : "string",
-          "example" : "https://api.example.com/something"
-        },
-        "previous" : {
-          "type" : "string",
-          "example" : "https://api.example.com/something-previous"
-        },
-        "next" : {
-          "type" : "string",
-          "example" : "https://api.example.com/something-next"
-        }
-      },
-      "description" : "URIs for previous, this and next. Only ```self``` is required, as previous and next may not exist.\n\nSee also the pagination headers: ```pageNumber```and ```pageSize```."
-    },
-    "notImplemented" : {
-      "type" : "object",
-      "properties" : {
-        "explanation" : {
-          "type" : "string",
-          "description" : "Text describing that this operation is not yet implemented.",
-          "default" : "Feedback is very welcome: developer@dnb.no"
-        },
-        "error" : {
-          "$ref" : "#/definitions/error"
-        }
-      },
-      "description" : "A special ```error``` wrapper: Standard response for endpoints that are not yet implemented. Used for endpoints tagged with ```Draft```."
-    },
-    "transaction" : {
-      "type" : "object",
-      "required" : [ "amount", "dateBooking", "transactionId" ],
-      "properties" : {
-        "transactionId" : {
-          "type" : "string",
-          "example" : "12345"
-        },
-        "accountNumber" : {
-          "type" : "string"
-        },
-        "transactionTimestamp" : {
-          "type" : "string",
-          "format" : "date-time"
-        },
-        "dateBooking" : {
-          "type" : "string",
-          "format" : "date",
-          "example" : "2018-12-31"
-        },
-        "dateValue" : {
-          "type" : "string",
-          "format" : "date",
-          "example" : "2018-12-31"
-        },
-        "dateReservation" : {
-          "type" : "string",
-          "format" : "date"
-        },
-        "originalCurrencyValue" : {
-          "type" : "number",
-          "description" : "Amount in foreign currency (if relevant)",
-          "example" : 90
-        },
-        "originalCurrency" : {
-          "type" : "string",
-          "description" : "If not the currency of the account/card.",
-          "default" : "NOK",
-          "minLength" : 3,
-          "maxLength" : 3,
-          "pattern" : "`^[A-Z]{3}$",
-          "example" : "NOK"
-        },
-        "amount" : {
-          "type" : "number",
-          "description" : "Amount in the account's currency",
-          "minimum" : 0,
-          "example" : 1500
-        },
-        "exchangeRate" : {
-          "type" : "number"
-        },
-        "status" : {
-          "type" : "string",
-          "description" : "Booked, reserved, and, if this is to be merged with ```payment```: Completed (or something similar, to indicate that this has, in fact, been processed and finalized)",
-          "default" : "BOOKED",
-          "enum" : [ "BOOKED", "RESERVED" ],
-          "example" : "BOOKED"
-        },
-        "description" : {
-          "type" : "string",
-          "description" : "Descriptive text for the transaction.",
-          "example" : "Lunch at The Restaurant at the End of the Universe"
-        },
-        "merchantName" : {
-          "type" : "string",
-          "description" : "Name of merchant. With a merhant register, this could be replaced with a (for now, non-existant) ```merchantId```.",
-          "example" : "Coffee Shop ChainName, shop number 10"
-        },
-        "externalReference" : {
-          "type" : "string"
-        },
-        "message" : {
-          "type" : "string",
-          "description" : "Merge with ```kid```? See also ```paymentInitiation```and ```payment```."
-        },
-        "kid" : {
-          "type" : "string",
-          "description" : "Merge with ```message```? Merge with ```kid```? See also ```paymentInitiation```and ```payment```."
-        },
-        "paymentId" : {
-          "type" : "string"
-        },
-        "reservationId" : {
-          "type" : "string"
-        },
-        "cardId" : {
-          "type" : "string"
-        },
-        "details" : {
-          "type" : "array",
-          "items" : {
-            "type" : "string"
-          }
-        },
-        "metadata" : {
-          "type" : "array",
-          "items" : {
-            "type" : "string"
-          }
-        }
-      },
-      "description" : "A ```transaction``` is a completed operation, in contrast to ```payment```, which is planned, but not completed.\n\nThe same ```transaction``` is used for all types of transactions: DNB-only account transactions, domestic transactions, international transactions, card transactions, etc. Some transaction types have more fields and data than others. A developer does not need to know about different transaction types when retrieving them, this is ."
+      "description" : "The test customers available in our sandbox. Currently not in any endpoint, but will be implemented shortly."
     },
     "tokenInfo" : {
       "type" : "object",
@@ -1749,6 +1543,18 @@
         }
       },
       "description" : "A token representing the end-consumer of the API.\n"
+    },
+    "customerId" : {
+      "type" : "object",
+      "properties" : {
+        "type" : {
+          "type" : "string"
+        },
+        "value" : {
+          "type" : "string"
+        }
+      },
+      "example" : "{type:'SSN', value:'4238934242'}"
     },
     "customer" : {
       "type" : "object",
@@ -2032,8 +1838,7 @@
           "example" : "'Astrid Ruud'"
         }
       },
-      "description" : "Same ```account``` data object is used for all types of accounts. The ```type``` property determines the type. \n\nAn ```account``` may have ```accountDetails```, which may again have ```accountBalance``` and  ```accountInterestDetails```. \n\n**Format**\n\nA Norwegian ```account```has three groups: xxxx yy zzzzc. Excample: 8601 11 17947.\n\n* xxxx: Bank register number, identifying bank and branch. \n* yy: Account group. \n* zzzz: Customer account number.  \n* c: Control digit, modulo 11 with weight number 5432765432.\n\nMore details: https://www.ecbs.org/iban/norway-bank-account-number.html\n",
-      "example" : "  {\r\n    \"debetCardExists\": \"false\",\r\n    \"accountAlias\": \"brukskonto\",\r\n    \"accountOwnerPublicId\": \"12050166108\",\r\n    \"inDefaultStatus\": \"false\",\r\n    \"accountCategory\": \"DEPOSIT\",\r\n    \"accountCurrency\": \"NOK\",\r\n    \"withdrawalAllowed\": \"true\",\r\n    \"accountNumber\": \"12047506532\",\r\n    \"productName\": \"BRUKSKONTO\",\r\n    \"transferToAllowed\": \"true\",\r\n    \"paymentFromAllowed\": \"true\",\r\n    \"transferFromAllowed\": \"true\",\r\n    \"standingOrderExists\": \"true\",\r\n    \"countryOfAccountOwnerPublicId\": \"NO\",\r\n    \"accountOwnerName\": \"Per Jensen\"\r\n  }"
+      "description" : "Same ```account``` data object is used for all types of accounts. The ```type``` property determines the type. \n\nAn ```account``` may have ```accountDetails```, which may again have ```accountBalance``` and  ```accountInterestDetails```. \n\n**Format**\n\nA Norwegian ```account```has three groups: xxxx yy zzzzc. Excample: 8601 11 17947.\n\n* xxxx: Bank register number, identifying bank and branch. \n* yy: Account group. \n* zzzz: Customer account number.  \n* c: Control digit, modulo 11 with weight number 5432765432.\n\nMore details: https://www.ecbs.org/iban/norway-bank-account-number.html\n"
     },
     "balance" : {
       "type" : "object",
@@ -2064,15 +1869,119 @@
           "example" : "100000.00"
         }
       },
-      "description" : "Common data object used by both ```account```and  ```card```. \n\nNot all fields from Shared Service Layer is used, since ```balance```wil be part of an ```account```or a ```card```, and information from parent data object is implicit. Some values offered by the Shared Service Layer may easily be calculated, such as: availableBalanceWithCredit = bookedBalance + creditLimit. \n\nExample:\n```\n{\n  \"currency\": \"NOK\",\n  \"creditLimit\": 100000.00,\n  \"balance\": 90000.01,\n  \"lastBalanceChange\": \"2018-12-31T23:59:59+01:00\"\n}\n```\n\nOffered by the Shared Service Layer:\n```\n{\n  \"accountNumber\": \"05390000000\",\n  \"currency\": \"NOK\",\n  \"availableBalanceWithCredit\": 1000.00,\n  \"availableBalanceWithoutCredit\": 500.00,\n  \"bookedBalance\": 500.00,\n  \"creditLimit\": 500.00,\n  \"lastBalanceChange\": \"2016-02-28 16:41:41\"\n  \"reservedAmount\": 500.00,\n  \"instalmentAmount\": 500.00,\n  \"usedAmount\": 500.00\n}\n```"
+      "description" : "Common data object used by both ```account```and  ```card```. The available balance of a card, not taking into account the due payments on the account."
+    },
+    "transaction" : {
+      "type" : "object",
+      "required" : [ "amount", "dateBooking", "transactionId" ],
+      "properties" : {
+        "transactionId" : {
+          "type" : "string",
+          "example" : "12345"
+        },
+        "accountNumber" : {
+          "type" : "string"
+        },
+        "transactionTimestamp" : {
+          "type" : "string",
+          "format" : "date-time"
+        },
+        "dateBooking" : {
+          "type" : "string",
+          "format" : "date",
+          "example" : "2018-12-31"
+        },
+        "dateValue" : {
+          "type" : "string",
+          "format" : "date",
+          "example" : "2018-12-31"
+        },
+        "dateReservation" : {
+          "type" : "string",
+          "format" : "date"
+        },
+        "originalCurrencyValue" : {
+          "type" : "number",
+          "description" : "Amount in foreign currency (if relevant)",
+          "example" : 90
+        },
+        "originalCurrency" : {
+          "type" : "string",
+          "description" : "If not the currency of the account/card.",
+          "default" : "NOK",
+          "minLength" : 3,
+          "maxLength" : 3,
+          "pattern" : "`^[A-Z]{3}$",
+          "example" : "NOK"
+        },
+        "amount" : {
+          "type" : "number",
+          "description" : "Amount in the account's currency",
+          "minimum" : 0,
+          "example" : 1500
+        },
+        "exchangeRate" : {
+          "type" : "number"
+        },
+        "status" : {
+          "type" : "string",
+          "description" : "Booked, reserved, and, if this is to be merged with ```payment```: Completed (or something similar, to indicate that this has, in fact, been processed and finalized)",
+          "default" : "BOOKED",
+          "enum" : [ "BOOKED", "RESERVED" ],
+          "example" : "BOOKED"
+        },
+        "description" : {
+          "type" : "string",
+          "description" : "Descriptive text for the transaction.",
+          "example" : "Lunch at The Restaurant at the End of the Universe"
+        },
+        "merchantName" : {
+          "type" : "string",
+          "description" : "Name of merchant. With a merhant register, this could be replaced with a (for now, non-existant) ```merchantId```.",
+          "example" : "Coffee Shop ChainName, shop number 10"
+        },
+        "externalReference" : {
+          "type" : "string"
+        },
+        "message" : {
+          "type" : "string",
+          "description" : "Merge with ```kid```? See also ```paymentInitiation```and ```payment```."
+        },
+        "kid" : {
+          "type" : "string",
+          "description" : "Merge with ```message```? Merge with ```kid```? See also ```paymentInitiation```and ```payment```."
+        },
+        "paymentId" : {
+          "type" : "string"
+        },
+        "reservationId" : {
+          "type" : "string"
+        },
+        "cardId" : {
+          "type" : "string"
+        },
+        "details" : {
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          }
+        },
+        "metadata" : {
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          }
+        }
+      },
+      "description" : "A ```transaction``` is a completed operation between two accounts, in contrast to ```payment```, which is planned, but not completed.\n\nThe same ```transaction``` is used for all types of transactions: DNB-only account transactions, domestic transactions, international transactions, card transactions, etc. Some transaction types have more fields and data than others. A developer does not need to know about different transaction types when retrieving them, this is ."
     },
     "paymentInitiation" : {
       "type" : "object",
-      "required" : [ "amount", "creditAccountNumber", "debitAccountNumber", "initiator", "paymentDate", "type" ],
+      "required" : [ "amount", "creditAccountNumber", "debitAccountNumber", "paymentDate", "type" ],
       "properties" : {
         "type" : {
           "type" : "string",
-          "description" : "KID, message or transfer",
+          "description" : "The payment type: KID, message or transfer. A transfer is a payment between two accounts with the same owner, a message is an outgoing payment with just a descriptive message and KID is a payment with a KID (customer identification) number.",
           "default" : "KID",
           "enum" : [ "KID", "MESSAGE", "TRANSFER" ],
           "example" : "KID"
@@ -2106,15 +2015,10 @@
           "type" : "string",
           "description" : "Used for both KID and Message, based on Type.",
           "example" : "35298562958265982749"
-        },
-        "initiator" : {
-          "type" : "string",
-          "description" : "Nu phone who dis?",
-          "example" : "DNB"
         }
       },
       "description" : "The payment initiation object can be used for three types of payments, which should be specified in the ```type``` property:\n* ```KID```: The customer identification number specified by the recieving end, often described in the invioce. \n* ```MESSAGE```: A payment just having a text message attached with it.\n* ```TRANSFER```: A payment going between two DNB accounts having the same owner. \n\nNot including the \"straksbetaling\" (imediate payment) flag, as this will be the default.\n\nPayment initiator: Part of the context object, but kept here too for reference. ",
-      "example" : "{\n\"paymentId\":\"\",\n\"paymentType\":\"\",\n\"debitAccountNumber\":\"05390000000\",\n\"creditAccountNumber\":\"05390000001\",\n\"message\":\"This is a payment\",\n\"kid\":\"\",\n\"requestedExecutionDate\":\"2017-04-11\",\n\"country\":\"NO\",\n\"currency\":\"NOK\",\n\"amount\":\"125.00\",\n\"onBehalfOf\":\"\",\n\"immediatePayment\":false,\n\"dataSource\":\"0513\",\n\"lastChanged\":\"2014-08-01 16:41:09\",\n\"created\":\"2001-03-01 11:32:09\"\n  }"
+      "example" : "{\n\"paymentType\":\"\",\n\"debitAccountNumber\":\"05390000000\",\n\"creditAccountNumber\":\"05390000001\",\n\"amount\":\"125.00\",\n \"message\":\"This is a payment\",\n\"kid\":\"\",\n\"requestedExecutionDate\":\"2017-04-11\",\n\"country\":\"NO\",\n\"currency\":\"NOK\",\n\"onBehalfOf\":\"\",\n\"immediatePayment\":false,\n\"dataSource\":\"0513\",\n\"lastChanged\":\"2014-08-01 16:41:09\",\n\"created\":\"2001-03-01 11:32:09\"\n  }"
     },
     "paymentDetails" : {
       "type" : "object",
@@ -2155,16 +2059,25 @@
         },
         "type" : {
           "type" : "string",
-          "description" : "TBD",
-          "example" : "TBD1"
+          "description" : "The payment type: KID, message or transfer. A transfer is a payment between two accounts with the same owner, a message is an outgoing payment with just a descriptive message and KID is a payment with a KID (customer identification) number.",
+          "example" : "KID"
         },
-        "date" : {
+        "created" : {
           "type" : "string",
           "format" : "date",
-          "example" : "2018-31-12"
+          "description" : "The creation point of a payment",
+          "example" : "2001-03-01 11:32:09"
         },
         "paymentDetails" : {
           "$ref" : "#/definitions/paymentDetails"
+        },
+        "country" : {
+          "type" : "string",
+          "example" : "NO"
+        },
+        "currency" : {
+          "type" : "string",
+          "example" : "NOK"
         }
       },
       "description" : "**NOTE:** May be completely merged with ```transaction```.\n\nA ```payment``` is a planned payment/transaction that has not yet been carried out.\n\nTODO: There is no ```message```or ```kid```, as in ```paymentInitiation```and ```transaction```. Check this.\n\nDetails about a payment. Used by:\n* /payments/due/{accountNumber}: Returning a list of payments, with _empty_ PaymentDetails\n* /payments/due/{accountNumber}/details: Returning a list of payments, with PaymentDetails\n\n"
@@ -2184,11 +2097,13 @@
         },
         "customerId" : {
           "type" : "string",
-          "description" : "The id of the card holder"
+          "description" : "The id of the card holder",
+          "example" : "FX040827979925254X"
         },
         "cardHolderName" : {
           "type" : "string",
-          "description" : "The name of the card holder"
+          "description" : "The name of the card holder",
+          "example" : "John Doe"
         },
         "cardType" : {
           "type" : "string",
@@ -2213,7 +2128,7 @@
           "description" : "The status of the card",
           "default" : "ACTIVE",
           "enum" : [ "ACTIVE", "NOTACTIVE", "BLOCKED" ],
-          "example" : "ACTIVE"
+          "example" : "BLOCKED"
         },
         "blockingInfo" : {
           "required" : [ "performedBy", "unblockAllowed" ],
@@ -2232,21 +2147,25 @@
             },
             "blockAllowed" : {
               "type" : "boolean",
-              "description" : "Can the card be blocked by the customer?"
+              "description" : "Can the card be blocked by the customer?",
+              "example" : true
             },
             "unblockAllowed" : {
               "type" : "boolean",
-              "description" : "Can the card be unblocked by the customer?"
+              "description" : "Can the card be unblocked by the customer?",
+              "example" : true
             }
           }
         },
         "debitBalance" : {
           "type" : "string",
-          "description" : "The debit balance on the card"
+          "description" : "The debit balance on the card",
+          "example" : "00.00"
         },
         "creditBalance" : {
           "type" : "string",
-          "description" : "The available credit balance of the card"
+          "description" : "The available credit balance of the card",
+          "example" : "00.00"
         },
         "created" : {
           "type" : "string",
@@ -2258,50 +2177,61 @@
           "description" : "When was the last change on the card",
           "example" : "2017-03-01 11:32:09"
         }
-      },
-      "example" : "{\r\n    \"cardId\": \"\",\r\n    \"maskedCardNumber\": \"xxxx-xxxx-xxxx-1234\",\r\n    \"customerId\": \"FX040827979925254X\",\r\n    \"cardHolderName\": \"Morten Nilsen\",\r\n    \"cardType\": \"Debit\",\r\n    \"productName\": \"\",\r\n    \"accountNumber\": \"05390000001\",\r\n    \"cardStatus\": \"Blocked\",\r\n    \"blockingInfo\": {\r\n        \"performedBy\": \"B - Bank\",\r\n        \"timestamp\": \"2017-03-01 11:32:09\",\r\n        \"blockAllowed\": true,\r\n\t\t\"unblockAllowed\": true\r\n    },\r\n    \"debitBalance\": \"00.00\",\r\n    \"creditBalance\": \"00.00\",\r\n    \"created\": \"2001-03-08 12:00:00\",\r\n    \"lastChanged\": \"2014-11-08 12:00:00\"\r\n}"
+      }
     },
     "cardStatement" : {
       "type" : "object",
       "properties" : {
         "statementId" : {
-          "type" : "string"
+          "type" : "string",
+          "description" : "The ID of the statement",
+          "example" : "05390000000"
         },
         "accountNumber" : {
-          "type" : "string"
+          "type" : "string",
+          "example" : "01234567891"
         },
         "currency" : {
-          "type" : "string"
+          "type" : "string",
+          "example" : "NOK"
         },
         "openingBalance" : {
-          "type" : "number"
+          "type" : "number",
+          "example" : 100
         },
         "closingBalance" : {
-          "type" : "number"
+          "type" : "number",
+          "example" : 100
         },
         "minimumDueAmount" : {
-          "type" : "number"
+          "type" : "number",
+          "example" : 100
         },
         "billingDate" : {
-          "type" : "string"
+          "type" : "string",
+          "example" : "2018-07-28"
         },
         "statementGeneratedDate" : {
-          "type" : "string"
+          "type" : "string",
+          "example" : "2018-07-28"
         },
         "dueDate" : {
-          "type" : "string"
+          "type" : "string",
+          "example" : "2018-08-28"
         },
         "currentClosingBalance" : {
-          "type" : "number"
+          "type" : "number",
+          "example" : 100
         },
         "instalmentAccountBalance" : {
           "type" : "number"
         },
         "totalOutstandingBalance" : {
-          "type" : "number"
+          "type" : "number",
+          "example" : 100
         }
       },
-      "example" : "\r\n{\r\n\t\"statementId\": \"1234\",\r\n\t\"accountNumber\": \"05390000000\",\r\n\t\"currency\": \"NOK\",\r\n\t\"openingBalance\": 100.00,\r\n\t\"closingBalance\": 100.00,\r\n\t\"minimumDueAmount\": 100.00,\r\n\t\"billingDate\": \"2016-02-28\",\r\n\t\"statementGeneratedDate\": \"2016-02-28\",\r\n\t\"dueDate\": \"2016-02-28\",\r\n\t\"currentClosingBalance\": 100.00,\r\n\t\"instalmentAccountBalance\": 100.00,\r\n\t\"totalOutstandingBalance\": 100\r\n}"
+      "example" : "\n{\n\t\"statementId\": \"1234\",\n\t\"accountNumber\": \"\",\n\t\"currency\": \"NOK\",\n\t\"openingBalance\": 100.00,\n\t\"closingBalance\": 100.00,\n\t\"minimumDueAmount\": 100.00,\n\t\"billingDate\": \"2016-02-28\",\n\t\"statementGeneratedDate\": \"2016-02-28\",\n\t\"dueDate\": \"2016-02-28\",\n\t\"currentClosingBalance\": 100.00,\n\t\"instalmentAccountBalance\": 100.00,\n\t\"totalOutstandingBalance\": 100\n}"
     },
     "currencyRate" : {
       "type" : "object",
@@ -2603,6 +2533,62 @@
         }
       },
       "description" : "All data for an ATM.\n"
+    },
+    "error" : {
+      "type" : "object",
+      "properties" : {
+        "errorDocumentation" : {
+          "type" : "string",
+          "description" : "URI to developer documentation for this error.",
+          "example" : "https://developer.dnb.no/something-useful-goes-here/"
+        },
+        "errorDetails" : {
+          "type" : "array",
+          "description" : "Details about the cause of this error (or errors). May contain information about an invalid parameter, or another specific problem.",
+          "items" : {
+            "type" : "object",
+            "properties" : {
+              "errorNumber" : {
+                "type" : "integer"
+              },
+              "errorField" : {
+                "type" : "string",
+                "description" : "Error cause. Not yet implemented.",
+                "example" : "accountNumber"
+              },
+              "errorDetailsDescription" : {
+                "type" : "string",
+                "description" : "Error cause. Not yet implemented.",
+                "example" : "accountNumber must be digits only"
+              }
+            }
+          }
+        }
+      },
+      "description" : "The HTTP status code (```httpStatus```) is the main classifier. A DNB-specific ```errorNumber```is also provided as a lookup reference. \n\nThe ```errorDocumentation``` is a URI to further information about the endpoint, with uesful infomration about correct usage.\n\nThe ```errorDetails```is specific information about the one or more errors that have occurred.\n\n**Note:** We strive to offer the best possible information about all errors. This depends on the information offered by the backend systems, and in some cases there is limited information available from the underlying solutions. In these cases, the errors may contain empty fields, and/or information that is difficult to interpret. In cases where the error information needs improvement, please let us know: developer@dnb.no. \n\nExample ```error``` (TODO: Work in progress: May need an update):\n```\n{\n  \"errorDocumentation\": \"https://developer.dnb.no/something-useful-goes-here/\",\n  \"errorDetails\": [\n    {\n      \"errorNumber\": \"123450\",\n      \"errorField\": \"accountNumber\",\n      \"errorDescription\": \"accountNumber must be digits only\"\n    },\n    {\n      \"errorNumber\": \"123451\",\n      \"errorField\": \"dateFrom\",\n      \"errorDescription\": \"dateFrom must be in ISO8601 date format\"\n    }\n  ]\n}\n```"
+    },
+    "headerLinks" : {
+      "type" : "object",
+      "required" : [ "first", "self" ],
+      "properties" : {
+        "first" : {
+          "type" : "string",
+          "example" : "https://api.example.com/something-first"
+        },
+        "self" : {
+          "type" : "string",
+          "example" : "https://api.example.com/something"
+        },
+        "previous" : {
+          "type" : "string",
+          "example" : "https://api.example.com/something-previous"
+        },
+        "next" : {
+          "type" : "string",
+          "example" : "https://api.example.com/something-next"
+        }
+      },
+      "description" : "URIs for previous, this and next. Only ```self``` is required, as previous and next may not exist.\n\nSee also the pagination headers: ```pageNumber```and ```pageSize```."
     }
   }
 }
