@@ -1,8 +1,8 @@
 {
   "swagger" : "2.0",
   "info" : {
-    "description" : "**IMPORTANT:** This API specification is a work in progress, so until there is an official release, please bear in mind that this spec might change. Having said that, the DNB Developer team would love to hear your thoughts on the current specification. After all, that is why we are publishing it! So feel free to contact us at developer@dnb.no. \n\n**Sandbox only:** \nNo APIs are currently publicly available in production - so all data returned from these endpoints are from a static sandbox environment containing *dummy data* only. We trying our best to get a dynamic sandbox and (of course) access to production available to you, but until then, enjoy the feeling of being able to initiate infinite payments without influencing your account balance.. Test customer SSNs can be found under `/testCustomers`.\n\n**General guidelines:**\n* We use camelCase, starting with lowercase: ```customerEngagement```, ```accountNumber```, ```creditCard```, etc.\n* Standards are mentioned and refered to, unless implicit by Swagger.\n* General rule: The response (object) determines endpoint: If the response is ```account```, the endpoint should be under ```/accounts```. In cases where this may be up for discussion, multiple endpoints may, for a limited time, be available in order to evaluate.\n* Versioning: Major.Minor.Patch (https://semver.org/). Major: Incompatible changes. Minor: New, backwards-compatible functionality. Patch: Backwards-compatible fixes. \n\n**Authorization**\nWe use AWS signatures for tokens, with AWS Region `eu-west-1`. You can read more about how it works at AWS's own docs: https://docs.aws.amazon.com/AmazonS3/latest/API/sig-v4-authenticating-requests.html.\n\n**HTTP Response Codes:**\n\nHTTP response are intended to be logical: If a ```customer```or an ```account``` does not exist, the response is ```404 Not Found```.  All errors return a relevant HTTP status code and response with an ``error`` containing additional details. The HTTP statuses returned are:\n\nSuccess\n\n* ```200: OK``` Success!   \n* ```201: Created``` Resource created. Reference included.\n* ```204: No Content``` Success - but no content returned   \n\nClient Error\n\n* ```400: Bad Request``` Your request was, somehow, not ok.  \n* ```401: Unauthorized``` You are unknown.   \n* ```403: Forbidden``` We know who you are, but you are attempting something you are not allowed to.  \n* ```404: Not Found``` What you looked for is not here.  \n* ```429: Too Many Requests``` Settle down!\n\nServer Error\n\n* ```500: Server Error``` We screwed up, sorry!\n* ```501: Not Implemented``` The operation is not (yet) implemented. \n* ```503: Service Unavailable``` Something is very wrong.\n* ```504: Timeout``` We need to speed up internally!\n\n**Github**\n\nBoth our swagger documentation and the test data is available on Github: https://github.com/DNBbank/\n\n**Contact DNB Open Banking**\n\nYou reach the entire team at developer@dnb.no. We do our best to reply as quickly as possible, and would love to hear from you!\n\n\n",
-    "version" : "0.10.47",
+    "description" : "**IMPORTANT:** This API specification is a work in progress, so until there is an official release, please bear in mind that this spec might change. Having said that, the DNB Developer team would love to hear your thoughts on the current specification. After all, that is why we are publishing it! So feel free to contact us at developer@dnb.no. \n\n**Sandbox only:** \nNo APIs are currently publicly available in production - so all data returned from these endpoints are from a static sandbox environment containing *dummy data* only. We trying our best to get a dynamic sandbox and (of course) access to production available to you, but until then, enjoy the feeling of being able to initiate infinite payments without influencing your account balance.. Test customer SSNs can be found under `/testCustomers`.\n\n**Authorization**\nWe use AWS signatures for tokens, with AWS Region `eu-west-1`. You can read more about how it works at AWS's own docs: https://docs.aws.amazon.com/AmazonS3/latest/API/sig-v4-authenticating-requests.html.\n\n**General guidelines:**\n* We use camelCase, starting with lowercase: ```customerEngagement```, ```accountNumber```, ```creditCard```, etc.\n* Standards are mentioned and refered to, unless implicit by Swagger.\n* General rule: The response (object) determines endpoint: If the response is ```account```, the endpoint should be under ```/accounts```. In cases where this may be up for discussion, multiple endpoints may, for a limited time, be available in order to evaluate.\n* Versioning: Major.Minor.Patch (https://semver.org/). Major: Incompatible changes. Minor: New, backwards-compatible functionality. Patch: Backwards-compatible fixes. \n\n**HTTP Response Codes:**\n\nHTTP response are intended to be logical: If a ```customer```or an ```account``` does not exist, the response is ```404 Not Found```.  All errors return a relevant HTTP status code and response with an ``error`` containing additional details. The HTTP statuses returned are:\n\nSuccess\n\n* ```200: OK``` Success!   \n* ```201: Created``` Resource created. Reference included.\n* ```204: No Content``` Success - but no content returned   \n\nClient Error\n\n* ```400: Bad Request``` Your request was, somehow, not ok.  \n* ```401: Unauthorized``` You are unknown.   \n* ```403: Forbidden``` We know who you are, but you are attempting something you are not allowed to.  \n* ```404: Not Found``` What you looked for is not here.  \n* ```429: Too Many Requests``` Settle down!\n\nServer Error\n\n* ```500: Server Error``` We screwed up, sorry!\n* ```501: Not Implemented``` The operation is not (yet) implemented. \n* ```503: Service Unavailable``` Something is very wrong.\n* ```504: Timeout``` We need to speed up internally!\n\n**Github**\n\nBoth our swagger documentation and the test data is available on Github: https://github.com/DNBbank/\n\n**Contact DNB Open Banking**\n\nYou reach the entire team at developer@dnb.no. We do our best to reply as quickly as possible, and would love to hear from you!\n\n\n",
+    "version" : "0.10.48",
     "title" : "DNB Developer APIs",
     "termsOfService" : "https://developer.dnb.no/#/termsofuse?pg=l",
     "contact" : {
@@ -40,7 +40,7 @@
       "get" : {
         "tags" : [ "API", "Draft" ],
         "summary" : "Get API token",
-        "description" : "An API returning a JWT token representing the end-consumer of the API. In the sandbox, you need this token for calling the Customer, Accounts, Transactions and Payments APIs. Find customer SSNs under `/testCustomers`.\n\nWe use **AWS Signatures** for authorization. For more information on how that work, please refer to AWS's own documentation at https://docs.aws.amazon.com/AmazonS3/latest/API/sig-v4-authenticating-requests.html.",
+        "description" : "Returning a JWT token representing the end-consumer. You need this token for calling the `Customer`,` Accounts`, `Transactions`, `Cards` and `Payments` APIs. Find test customer SSNs under `/testCustomers`.\n\n**Authorization: AWS Signature v.4**\nWe use AWS Signatures v.4 for authorization, with AWS region `eu-west-1`. If you're using Postman, the authorization header will be automatically generated when you send the request. For detailed information, we recommend [AWS's own documentation](https://docs.aws.amazon.com/AmazonS3/latest/API/sig-v4-authenticating-requests.html).  \n\n**Tip for Postman users:** \nAfter having generated the token, store it as a global variable to avoid having to update the JWT token for each API.",
         "operationId" : "getApiToken",
         "produces" : [ "application/json" ],
         "parameters" : [ {
@@ -82,8 +82,8 @@
     "/customers/current" : {
       "get" : {
         "tags" : [ "Customers", "Sandbox" ],
-        "summary" : "Get details for current customer",
-        "description" : "Retrieves basic information about the current ```customer```. ",
+        "summary" : "Get customer details",
+        "description" : "Retrieves information about the current ```customer```. ",
         "operationId" : "getCustomerCurrent",
         "parameters" : [ {
           "name" : "x-dnbapi-jwt",
@@ -140,8 +140,8 @@
     "/accounts" : {
       "get" : {
         "tags" : [ "Accounts", "Sandbox" ],
-        "summary" : "Get account list",
-        "description" : "Returns the list of DNB accounts for the current customer. \n\nThe customerId is included in the context object. ",
+        "summary" : "Get accounts",
+        "description" : "Returns the list of DNB accounts for the current customer. ",
         "operationId" : "getAccountsForCurrentUser",
         "parameters" : [ {
           "name" : "x-dnbapi-jwt",
@@ -325,11 +325,11 @@
       "get" : {
         "tags" : [ "Transactions", "Sandbox" ],
         "summary" : "Get transactions for account",
-        "description" : "A transaction is a payment which already has been completed. This API allows you to retrieve the latest transactions on an account. \n\nOptional query parameters below. Note: We're working on adding more!\n* fromDate: \"YYYY-MM-DD\": ISO 8601: www.iso.org/iso/home/standards/iso8601.htm\n* toDate: \"YYYY-MM-DD\": ISO 8601: www.iso.org/iso/home/standards/iso8601.htm",
+        "description" : "A` transaction` is a conducted payment to or from a specific account.\n\nThis API retrives the last transactions on an account.",
         "operationId" : "getAccountTransactions",
         "produces" : [ "application/json" ],
         "parameters" : [ {
-          "name" : "dateFrom",
+          "name" : "fromDate",
           "in" : "query",
           "required" : false,
           "type" : "string",
@@ -337,7 +337,7 @@
           "description" : "Filter for start date (included)",
           "x-example" : "2018-01-01"
         }, {
-          "name" : "dateTo",
+          "name" : "toDate",
           "in" : "query",
           "required" : false,
           "type" : "string",
@@ -408,7 +408,7 @@
       "post" : {
         "tags" : [ "Payments", "Sandbox" ],
         "summary" : "Initiate payment",
-        "description" : "Initiate a domestic payment going directly from a DNB account with KID or message. Also allows for transfers (payments between accounts held by the same owner). The recieving account can be in whichever bank, but for domestic payments it has to be a Norwegian one.\n\nAccepts a ```paymentInitiation``` POST, and returns HTTP 201 with the ```PaymentId``` of the successfully created ```payment```.\n\n*Note: As our sandbox is currently static, initiating payments unfortuntately won't reflect in neither the balance nor lastest transactions of the account. While we are working hard to get you a dynamic sandbox, you may in the meanwhile look at it as finally having that infinite account never getting affected by your purchases.*",
+        "description" : "Initiate a domestic payment going directly from a DNB account with KID or message. Also allows for transfers (payments between accounts held by the same owner). The recieving account can be in whichever bank, but for domestic payments it has to be a Norwegian one.\n\nAccepts a ```paymentInitiation``` POST, and returns HTTP 201 with the ```PaymentId``` of the successfully created ```payment```.\n\n***Note**: As our sandbox is currently static, initiating payments unfortuntately won't reflect in neither the balance nor lastest transactions of the account. While we are working hard to get you a dynamic sandbox, you may in the meanwhile look at it as finally having that infinite account never getting affected by your purchases.*",
         "operationId" : "paymentInitiate",
         "consumes" : [ "application/json" ],
         "parameters" : [ {
@@ -712,8 +712,8 @@
     "/cards" : {
       "get" : {
         "tags" : [ "Cards", "draft" ],
-        "summary" : "Get cards of current customer",
-        "description" : "Returns a list of all the credit and debit cards registered in DNB for the current customer.\n\n**Note**: This API is not yet available in our sandbox - we are working to get it up and running as soon as possible.",
+        "summary" : "Get cards",
+        "description" : "Returns a list of all the credit and debit cards registered in DNB for the current customer.\n\n***Note**: This API is not yet available in our sandbox - we are working to get it up and running as soon as possible.*",
         "operationId" : "cards",
         "produces" : [ "application/json" ],
         "parameters" : [ {
@@ -745,8 +745,8 @@
     "/cards/{cardId}/" : {
       "get" : {
         "tags" : [ "Cards", "Draft" ],
-        "summary" : "Get card details",
-        "description" : "**Note:** This API endpoint is not yet available in our sandbox. We're working to get it out as soon as possible!\n\nIncludes balance and credit limit (when applicable).",
+        "summary" : "Get card",
+        "description" : "Returns information about a single credit or debit card.\n\n***Note**: This API is not yet available in our sandbox - we are working to get it up and running as soon as possible.*",
         "operationId" : "getCardDetailsById",
         "parameters" : [ {
           "name" : "x-dnbapi-jwt",
@@ -763,7 +763,10 @@
         } ],
         "responses" : {
           "200" : {
-            "description" : "Request succeeded"
+            "description" : "Request succeeded",
+            "schema" : {
+              "$ref" : "#/definitions/card"
+            }
           },
           "400" : {
             "description" : "Bad Request",
@@ -930,7 +933,7 @@
         } ],
         "responses" : {
           "200" : {
-            "description" : "The card is now blocked",
+            "description" : "Card is blocked",
             "schema" : {
               "type" : "array",
               "items" : {
@@ -996,7 +999,7 @@
         } ],
         "responses" : {
           "200" : {
-            "description" : "Unblocked"
+            "description" : "Card is unblocked"
           },
           "400" : {
             "description" : "Bad Request",
@@ -1535,11 +1538,13 @@
       "properties" : {
         "customerPublidId" : {
           "type" : "string",
-          "description" : "The SSN of the customer in question.\n\nTODO: Replace ```customerPublidId```with ```ssn```."
+          "description" : "The ID value of the customer in question",
+          "example" : "29105573083"
         },
         "jwtToken" : {
           "type" : "string",
-          "description" : "Your token."
+          "description" : "Your token.",
+          "example" : "eyJhbGciOiJBMTI4S1ciLCJlbmMiOiJBMTI4Q0JDLUhTMjU2In0.dgQFqwxRJAeiAjaV8CHpstTIQNFy0Vb4Qf9-MdGS4USbpA_UJEC18A.a9Cg-ZW8_qvCL-15U-D0vQ.0AhVInk87Fy36Z7stvDVrb7_w1JWFUen2b7xshHeTOSKYT3_PDhbBZGRq3yJ1ZVBc5j15M4mFkpOmrfFfwWyUxrZOACLjxmNVEeaE8gzjR4GR0nf0S7ZtM-kLC9KY_WGMVKonzesc9afp3h9655HpOUF8_IdzDPAtgux6ztmNrisN0k0U-KrYuLeEawcNsRfIq27cb2TSho0sTx3Z7foDW_YmnLtphHV5OzecIeKi4DU8czd4Q3AP-IjHCv5c3fFBStilGY4czaosdA5Hp7QwftZej3B7h5LdW8umOJasrjYAxr7Jkia9urb22v4fo5R9Wm9cPMqayoNhbf8eeTQ5aHlSQV55zLxrrt473YAP2x-Swo2ROYaRbFjo5D-e02CNpZglZLnv2zMDf-H7elmsW9-3JH6DvG70seQEm4j3frtq_F2jL6k2ng16Hk4TYVtQE4FsFK8WT6V3K8TI9XmqyUOYYuJnSDmN0GyACxfRfTiEUz2e-ZK4QbuFCdoNqkmsDmuV3gWBEaXfo_IHHjM8iZM-b94NxBGQ0tsMoXf8aTF9bIBI1lJbKVRTOWy1B70_VKroub0RfI4uba8-PX5KXGVbmo5Wsk_g8K3hCDwU6jpvaicRlYQHVJo_ANG-A8E.gPY3Xc6CMZN_o13jc3YJtQ"
         }
       },
       "description" : "A token representing the end-consumer of the API.\n"
@@ -2230,8 +2235,7 @@
           "type" : "number",
           "example" : 100
         }
-      },
-      "example" : "\n{\n\t\"statementId\": \"1234\",\n\t\"accountNumber\": \"\",\n\t\"currency\": \"NOK\",\n\t\"openingBalance\": 100.00,\n\t\"closingBalance\": 100.00,\n\t\"minimumDueAmount\": 100.00,\n\t\"billingDate\": \"2016-02-28\",\n\t\"statementGeneratedDate\": \"2016-02-28\",\n\t\"dueDate\": \"2016-02-28\",\n\t\"currentClosingBalance\": 100.00,\n\t\"instalmentAccountBalance\": 100.00,\n\t\"totalOutstandingBalance\": 100\n}"
+      }
     },
     "currencyRate" : {
       "type" : "object",
