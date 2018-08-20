@@ -711,7 +711,7 @@
     },
     "/cards" : {
       "get" : {
-        "tags" : [ "Cards", "draft" ],
+        "tags" : [ "Cards", "Draft" ],
         "summary" : "Get cards",
         "description" : "Returns a list of all the credit and debit cards registered in DNB for the current customer.\n\n***Note**: This API is not yet available in our sandbox - we are working to get it up and running as soon as possible.*",
         "operationId" : "cards",
@@ -839,7 +839,7 @@
       } ]
     },
     "/cards/{cardId}/block" : {
-      "patch" : {
+      "put" : {
         "tags" : [ "Cards", "Draft" ],
         "summary" : "Block card",
         "description" : "**Note:** This API endpoint is not yet available in our sandbox. We're working to get it out as soon as possible!\n\nThis API enables the end-customer to block a debit or credit card (not including Cresco Cards). To block means to not stop payments of going through on a card.",
@@ -905,7 +905,7 @@
       } ]
     },
     "/cards/{cardId}/unblock" : {
-      "patch" : {
+      "put" : {
         "tags" : [ "Cards", "Draft" ],
         "summary" : "Unblock card",
         "description" : "**Note:** This API endpoint is not yet available in our sandbox. We're working to get it out as soon as possible!\n\nThis API enables the end-customer to unblock a card having a so-called \"soft block\", i.e. where `cardStatus` is `Blocked` and `unblockAllowed` is `true`. This will change that status of the card to `Unblocked`.",
@@ -1485,7 +1485,7 @@
           "type" : "string"
         }
       },
-      "example" : "{type:'SSN', value:'4238934242'}"
+      "example" : "{\"type\":\"SSN\",\"value\":\"4238934242\"}"
     },
     "customer" : {
       "type" : "object",
