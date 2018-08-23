@@ -1,8 +1,8 @@
 {
   "swagger" : "2.0",
   "info" : {
-    "description" : "**IMPORTANT:** This API specification is a work in progress, so until there is an official release, please bear in mind that this spec might change. Having said that, the DNB Developer team would love to hear your thoughts on the current specification. After all, that is why we are publishing it! So feel free to contact us at developer@dnb.no. \n\n**Sandbox only:** \nNo APIs are currently publicly available in production - so all data returned from these endpoints are from a static sandbox environment containing *dummy data* only. We trying our best to get a dynamic sandbox and (of course) access to production available to you, but until then, enjoy the feeling of being able to initiate infinite payments without influencing your account balance.. Test customer SSNs can be found under `/testCustomers`.\n\n**Authorization**\nWe use AWS signatures for tokens, with AWS Region `eu-west-1`. You can read more about how it works at AWS's own docs: https://docs.aws.amazon.com/AmazonS3/latest/API/sig-v4-authenticating-requests.html.\n\n**General guidelines:**\n* We use camelCase, starting with lowercase: ```customerEngagement```, ```accountNumber```, ```creditCard```, etc.\n* Standards are mentioned and refered to, unless implicit by Swagger.\n* General rule: The response (object) determines endpoint: If the response is ```account```, the endpoint should be under ```/accounts```. In cases where this may be up for discussion, multiple endpoints may, for a limited time, be available in order to evaluate.\n* Versioning: Major.Minor.Patch (https://semver.org/). Major: Incompatible changes. Minor: New, backwards-compatible functionality. Patch: Backwards-compatible fixes. \n\n**HTTP Response Codes:**\n\nHTTP response are intended to be logical: If a ```customer```or an ```account``` does not exist, the response is ```404 Not Found```.  All errors return a relevant HTTP status code and response with an ``error`` containing additional details. The HTTP statuses returned are:\n\nSuccess\n\n* ```200: OK``` Success!   \n* ```201: Created``` Resource created. Reference included.\n* ```204: No Content``` Success - but no content returned   \n\nClient Error\n\n* ```400: Bad Request``` Your request was, somehow, not ok.  \n* ```401: Unauthorized``` You are unknown.   \n* ```403: Forbidden``` We know who you are, but you are attempting something you are not allowed to.  \n* ```404: Not Found``` What you looked for is not here.  \n* ```429: Too Many Requests``` Settle down!\n\nServer Error\n\n* ```500: Server Error``` We screwed up, sorry!\n* ```501: Not Implemented``` The operation is not (yet) implemented. \n* ```503: Service Unavailable``` Something is very wrong.\n* ```504: Timeout``` We need to speed up internally!\n\n**Github**\n\nBoth our swagger documentation and the test data is available on Github: https://github.com/DNBbank/\n\n**Contact DNB Open Banking**\n\nYou reach the entire team at developer@dnb.no. We do our best to reply as quickly as possible, and would love to hear from you!\n\n\n",
-    "version" : "0.10.50",
+    "description" : "**IMPORTANT:** This API specification is a work in progress, so until there is an official release, please bear in mind that this spec might change. Having said that, the DNB Developer team would love to hear your thoughts on the current specification. After all, that is why we are publishing it! So feel free to contact us at developer@dnb.no. \n\n**Sandbox only:** \nNo APIs are currently publicly available in production - so all data returned from these endpoints are from a static sandbox environment containing *dummy data* only. We trying our best to get a dynamic sandbox and (of course) access to production available to you, but until then, enjoy the feeling of being able to initiate infinite payments without influencing your account balance.. Test customer SSNs can be found under `/testCustomers`.\n\n**Authorization**\nWe use AWS signatures for tokens, with AWS Region `eu-west-1`. You can read more about how it works at AWS's own docs: https://docs.aws.amazon.com/AmazonS3/latest/API/sig-v4-authenticating-requests.html.\n\n**General guidelines:**\n* We use camelCase, starting with lowercase: ```customerEngagement```, ```accountNumber```, ```creditCard```, etc.\n* Standards are mentioned and refered to, unless implicit by Swagger.\n* General rule: The response (object) determines endpoint: If the response is ```account```, the endpoint should be under ```/accounts```. In cases where this may be up for discussion, multiple endpoints may, for a limited time, be available in order to evaluate.\n* Versioning: Major.Minor.Patch (https://semver.org/). Major: Incompatible changes. Minor: New, backwards-compatible functionality. Patch: Backwards-compatible fixes. \n\n**Github**\n\nBoth our swagger documentation and the test data is available on Github: https://github.com/DNBbank/\n\n**Contact DNB Open Banking**\n\nYou reach the entire team at developer@dnb.no. We do our best to reply as quickly as possible, and would love to hear from you!\n\n\n",
+    "version" : "0.10.51",
     "title" : "DNB Developer APIs",
     "termsOfService" : "https://developer.dnb.no/#/termsofuse?pg=l",
     "contact" : {
@@ -40,7 +40,7 @@
       "get" : {
         "tags" : [ "API", "Draft" ],
         "summary" : "Get API token",
-        "description" : "Returning a JWT token representing the end-consumer. You need this token for calling the `Customer`,` Accounts`, `Transactions`, `Cards` and `Payments` APIs. Find test customer SSNs under `/testCustomers`.\n\n**Authorization: AWS Signature v.4**\nWe use AWS Signatures v.4 for authorization, with AWS region `eu-west-1`. If you're using Postman, the authorization header will be automatically generated when you send the request. For detailed information, we recommend [AWS's own documentation](https://docs.aws.amazon.com/AmazonS3/latest/API/sig-v4-authenticating-requests.html).  \n\n**Tip for Postman users:** \nAfter having generated the token, store it as a global variable to avoid having to update the JWT token for each API.",
+        "description" : "Returning a JWT token representing the end-consumer. You need this token for calling the `Customer`,` Accounts`, `Transactions`, `Cards` and `Payments` APIs. Find test customer SSNs under `/testCustomers`.\n\nThe JWT token has an expiry time of five minutes. After it has expired, call the API again to get a nice and fresh token.\n\n**Authorization: AWS Signature v.4**\nWe use AWS Signatures v.4 for authorization, with AWS region `eu-west-1`. If you're using Postman, the authorization header will be automatically generated when you send the request. For detailed information, we recommend [AWS's own documentation](https://docs.aws.amazon.com/AmazonS3/latest/API/sig-v4-authenticating-requests.html).  \n\n**Tip for Postman users:** \nAfter having generated the token, store it as a global variable to avoid having to update the JWT token for each API. Will make your life a little sweeter.",
         "operationId" : "getApiToken",
         "produces" : [ "application/json" ],
         "parameters" : [ {
@@ -48,8 +48,8 @@
           "in" : "query",
           "required" : true,
           "type" : "string",
-          "description" : "One or more SSNs of the customer to obtain token(s) for. Multiple SSNs to be specified as comma separated list without whitespace.\nExample: /api/token?customerId={type:'SSN', value:'4238934242'}",
-          "x-example" : "{type:'SSN', value:'4238934242'}"
+          "description" : "An object representing the ID of the customer. Should be given like: /api/token?customerId={\"type\":\"SSN\",\"value\":\"4238934242\"}",
+          "x-example" : "{\"type\":\"SSN\",\"value\":\"4238934242\"}"
         }, {
           "name" : "x-api-key",
           "in" : "header",
@@ -81,9 +81,9 @@
     },
     "/customers/current" : {
       "get" : {
-        "tags" : [ "Customers", "Sandbox" ],
+        "tags" : [ "Customers", "Sandbox", "1" ],
         "summary" : "Get customer details",
-        "description" : "Retrieves information about the current ```customer```. ",
+        "description" : "Retrieves basic contact information about a ```customer```. Currently only covering retail customers.",
         "operationId" : "getCustomerCurrent",
         "parameters" : [ {
           "name" : "x-dnbapi-jwt",
@@ -139,7 +139,7 @@
     },
     "/accounts" : {
       "get" : {
-        "tags" : [ "Accounts", "Sandbox" ],
+        "tags" : [ "Accounts", "Sandbox", "2" ],
         "summary" : "Get accounts",
         "description" : "Returns the list of DNB accounts for the current customer. ",
         "operationId" : "getAccountsForCurrentUser",
@@ -184,7 +184,7 @@
     },
     "/accounts/{accountNumber}" : {
       "get" : {
-        "tags" : [ "Accounts", "Sandbox" ],
+        "tags" : [ "Accounts", "Sandbox", "2" ],
         "summary" : "Get account details",
         "description" : "Returns the ```accountDetails``` of a given account. ",
         "operationId" : "getAccountDetails",
@@ -258,7 +258,7 @@
     },
     "/accounts/{accountNumber}/balance" : {
       "get" : {
-        "tags" : [ "Accounts", "Sandbox" ],
+        "tags" : [ "Accounts", "Sandbox", "2" ],
         "summary" : "Get account balance",
         "description" : "This API returns the balance of an account.",
         "operationId" : "getAccountBalance",
@@ -323,15 +323,15 @@
     },
     "/transactions/{accountNumber}/" : {
       "get" : {
-        "tags" : [ "Transactions", "Sandbox" ],
+        "tags" : [ "Transactions", "Sandbox", "3" ],
         "summary" : "Get transactions for account",
-        "description" : "A` transaction` is a conducted payment to or from a specific account.\n\nThis API retrives the last transactions on an account.",
+        "description" : "A `transaction` is a completed operation performed on a `card `or `account`, in contrast to `due payment`, which is planned but not completed.\n\nA `transaction` could either be positive or negative. A positive has added money to the account  `balance` and hence increased it, while a negative transaction as decreased it.\n\nThis API retrives the last transactions on an account, maximum going one year (12 months) back in time.",
         "operationId" : "getAccountTransactions",
         "produces" : [ "application/json" ],
         "parameters" : [ {
           "name" : "fromDate",
           "in" : "query",
-          "required" : false,
+          "required" : true,
           "type" : "string",
           "format" : "date",
           "description" : "Filter for start date (included)",
@@ -339,7 +339,7 @@
         }, {
           "name" : "toDate",
           "in" : "query",
-          "required" : false,
+          "required" : true,
           "type" : "string",
           "format" : "date",
           "description" : "Filter for end date (included).",
@@ -404,9 +404,261 @@
         "x-example" : "12345678901"
       } ]
     },
+    "/cards" : {
+      "get" : {
+        "tags" : [ "Cards", "Draft", "5" ],
+        "summary" : "Get cards",
+        "description" : "Returns a list of all the credit and debit cards registered in DNB for the current customer.\n\n***Note**: This API is not yet available in our sandbox - we are working to get it up and running as soon as possible.*",
+        "operationId" : "cards",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "x-dnbapi-jwt",
+          "in" : "header",
+          "required" : true,
+          "type" : "string",
+          "description" : "The JWT generated from Get API Token"
+        }, {
+          "name" : "x-api-key",
+          "in" : "header",
+          "required" : true,
+          "type" : "string",
+          "description" : "The API key from your app page in DNB Developer"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Request succeeded",
+            "schema" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/definitions/card"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/cards/{cardId}/" : {
+      "get" : {
+        "tags" : [ "Cards", "Draft", "5" ],
+        "summary" : "Get card",
+        "description" : "Returns information about a single credit or debit card.\n\n***Note**: This API is not yet available in our sandbox - we are working to get it up and running as soon as possible.*",
+        "operationId" : "getCardDetailsById",
+        "parameters" : [ {
+          "name" : "x-dnbapi-jwt",
+          "in" : "header",
+          "required" : true,
+          "type" : "string",
+          "description" : "The JWT Token generated from Get API Token"
+        }, {
+          "name" : "x-api-key",
+          "in" : "header",
+          "required" : true,
+          "type" : "string",
+          "description" : "The API key from your app page in DNB Developer"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Request succeeded",
+            "schema" : {
+              "$ref" : "#/definitions/card"
+            }
+          },
+          "400" : {
+            "description" : "Bad Request",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "401" : {
+            "description" : "Unauthorized",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "403" : {
+            "description" : "Forbidden",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "404" : {
+            "description" : "Not Found",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          }
+        }
+      },
+      "parameters" : [ {
+        "name" : "cardId",
+        "in" : "path",
+        "required" : true,
+        "type" : "string",
+        "description" : "The unique id of the card. Note that this is not the same as what is printed on a card, but an ID which can be fetched from Get card list.",
+        "x-example" : "12345678901"
+      } ]
+    },
+    "/cards/{cardId}/balance" : {
+      "get" : {
+        "tags" : [ "Cards", "Draft", "5" ],
+        "summary" : "Get card balance",
+        "description" : "**Note:** This API endpoint is not yet available in our sandbox. We're working to get it out as soon as possible!\n\nReturns the `balance` of a credit card, if available. For getting the balance of a debit card, use `Get Account Balance` for the associated account.",
+        "parameters" : [ {
+          "name" : "x-dnbapi-jwt",
+          "in" : "header",
+          "required" : true,
+          "type" : "string",
+          "description" : "The JWT Token generated from Get API Token"
+        }, {
+          "name" : "x-api-key",
+          "in" : "header",
+          "required" : true,
+          "type" : "string",
+          "description" : "The API key from your app page in DNB Developer"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Status 200",
+            "schema" : {
+              "$ref" : "#/definitions/balance"
+            }
+          }
+        }
+      },
+      "parameters" : [ {
+        "name" : "cardId",
+        "in" : "path",
+        "required" : true,
+        "type" : "string",
+        "description" : "The unique id of the card. Note that this is not the same as what is printed on a card, but an ID which can be fetched from Get card list."
+      } ]
+    },
+    "/cards/{cardId}/block" : {
+      "put" : {
+        "tags" : [ "Cards", "Draft", "5" ],
+        "summary" : "Block card",
+        "description" : "**Note:** This API endpoint is not yet available in our sandbox. We're working to get it out as soon as possible!\n\nThis API enables the end-customer to block a debit or credit card (not including Cresco Cards). To block means to not stop payments of going through on a card.",
+        "operationId" : "blockCard",
+        "parameters" : [ {
+          "name" : "x-dnbapi-jwt",
+          "in" : "header",
+          "required" : true,
+          "type" : "string",
+          "description" : "The JWT Token generated from Get API Token"
+        }, {
+          "name" : "x-api-key",
+          "in" : "header",
+          "required" : true,
+          "type" : "string",
+          "description" : "The API key from your app page in DNB Developer"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Card is blocked",
+            "schema" : {
+              "type" : "array",
+              "items" : {
+                "type" : "string"
+              }
+            },
+            "examples" : {
+              "application/json" : "ReasonCode"
+            }
+          },
+          "400" : {
+            "description" : "Bad Request",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "401" : {
+            "description" : "Unauthorized",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "403" : {
+            "description" : "Forbidden",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "404" : {
+            "description" : "Not Found",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          }
+        }
+      },
+      "parameters" : [ {
+        "name" : "cardId",
+        "in" : "path",
+        "required" : true,
+        "type" : "string",
+        "x-example" : "12345678901"
+      } ]
+    },
+    "/cards/{cardId}/unblock" : {
+      "put" : {
+        "tags" : [ "Cards", "Draft", "5" ],
+        "summary" : "Unblock card",
+        "description" : "**Note:** This API endpoint is not yet available in our sandbox. We're working to get it out as soon as possible!\n\nThis API enables the end-customer to unblock a card having a so-called \"soft block\", i.e. where `cardStatus` is `Blocked` and `unblockAllowed` is `true`. This will change that status of the card to `Unblocked`.",
+        "operationId" : "unblockCard",
+        "parameters" : [ {
+          "name" : "x-dnbapi-jwt",
+          "in" : "header",
+          "required" : true,
+          "type" : "string",
+          "description" : "The JWT Token generated from Get API Token"
+        }, {
+          "name" : "x-api-key",
+          "in" : "header",
+          "required" : true,
+          "type" : "string",
+          "description" : "The API key from your app page in DNB Developer"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Card is unblocked"
+          },
+          "400" : {
+            "description" : "Bad Request",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "401" : {
+            "description" : "Unauthorized",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "403" : {
+            "description" : "Forbidden",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "404" : {
+            "description" : "Not Found",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          }
+        }
+      },
+      "parameters" : [ {
+        "name" : "cardId",
+        "in" : "path",
+        "required" : true,
+        "type" : "string",
+        "x-example" : "12345678901"
+      } ]
+    },
     "/payments" : {
       "post" : {
-        "tags" : [ "Payments", "Sandbox" ],
+        "tags" : [ "Payments", "Sandbox", "5" ],
         "summary" : "Initiate payment",
         "description" : "Initiate a domestic payment going directly from a DNB account with KID or message. Also allows for transfers (payments between accounts held by the same owner). The recieving account can be in whichever bank, but for domestic payments it has to be a Norwegian one.\n\nAccepts a ```paymentInitiation``` POST, and returns HTTP 201 with the ```PaymentId``` of the successfully created ```payment```.\n\n***Note**: As our sandbox is currently static, initiating payments unfortuntately won't reflect in neither the balance nor latest transactions of the account. While we are working hard to get you a dynamic sandbox, you may in the meanwhile look at it as finally having that infinite account never getting affected by your purchases.*",
         "operationId" : "paymentInitiate",
@@ -468,7 +720,7 @@
     },
     "/payments/{paymentId}" : {
       "delete" : {
-        "tags" : [ "Payments", "Sandbox" ],
+        "tags" : [ "Payments", "Sandbox", "5" ],
         "summary" : "Delete payment by id",
         "description" : "Delete a due payment for an DNB account. To list the due payments, head over to *Get due payments*.\n\n**Note:** As our sandbox is currently static, deleting payments will not update the list of due payments in the Sandbox. The reason we are still making the APIs available is to allow for testing of responses and such while readying the dynamic sandbox for you. ",
         "operationId" : "deletePayment",
@@ -516,7 +768,7 @@
         }
       },
       "patch" : {
-        "tags" : [ "Payments", "Sandbox" ],
+        "tags" : [ "Payments", "Sandbox", "5" ],
         "summary" : "Update existing payment",
         "description" : "Update a due payment on an accont. A due ```payment``` can be updated until its due date, by changing one of the following parameters:\n* Date \n* Amount\n* Status (deactivate, reactivate)\n\nReturns the updated ```payment```.\n\n*Note: As our sandbox is currently static, deleting payments will not update the list of due payments in the Sandbox. The reason we are still making the APIs available is to allow for testing of responses and such while readying the dynamic sandbox for you.*",
         "operationId" : "updatePayment",
@@ -583,9 +835,9 @@
     },
     "/payments/{accountNumber}/due" : {
       "get" : {
-        "tags" : [ "Payments", "Sandbox" ],
+        "tags" : [ "Payments", "Sandbox", "4" ],
         "summary" : "Get due payments for an account",
-        "description" : "A due payment is a `payment` scheduled to be deducted from an account in the future. It can be updated or deleted until its' due date.",
+        "description" : "A `due payment` is a scheduled operation on an `account`. It can be updated or deleted until its' due date. Once the payment date is reached, the due payments becomes a payment. When the payment is processed, it becomes a `transaction` on that account.",
         "operationId" : "getPaymentsDue",
         "produces" : [ "application/json" ],
         "parameters" : [ {
@@ -646,7 +898,7 @@
     },
     "/payments/{accountNumber}/due/{paymentId}" : {
       "get" : {
-        "tags" : [ "Payments", "Sandbox" ],
+        "tags" : [ "Payments", "Sandbox", "4" ],
         "summary" : "Get due payment by payment id",
         "description" : "A due payment is a `payment` that is scheduled to be deducted from an account. It can be changed until its due date, by using update or delete payment\n\nThis API retrieves the details of a specific `due payment`. complete with with ```paymentDetails```.",
         "operationId" : "getPaymentDueById",
@@ -709,258 +961,6 @@
         "type" : "string"
       } ]
     },
-    "/cards" : {
-      "get" : {
-        "tags" : [ "Cards", "Draft" ],
-        "summary" : "Get cards",
-        "description" : "Returns a list of all the credit and debit cards registered in DNB for the current customer.\n\n***Note**: This API is not yet available in our sandbox - we are working to get it up and running as soon as possible.*",
-        "operationId" : "cards",
-        "produces" : [ "application/json" ],
-        "parameters" : [ {
-          "name" : "x-dnbapi-jwt",
-          "in" : "header",
-          "required" : true,
-          "type" : "string",
-          "description" : "The JWT generated from Get API Token"
-        }, {
-          "name" : "x-api-key",
-          "in" : "header",
-          "required" : true,
-          "type" : "string",
-          "description" : "The API key from your app page in DNB Developer"
-        } ],
-        "responses" : {
-          "200" : {
-            "description" : "Request succeeded",
-            "schema" : {
-              "type" : "array",
-              "items" : {
-                "$ref" : "#/definitions/card"
-              }
-            }
-          }
-        }
-      }
-    },
-    "/cards/{cardId}/" : {
-      "get" : {
-        "tags" : [ "Cards", "Draft" ],
-        "summary" : "Get card",
-        "description" : "Returns information about a single credit or debit card.\n\n***Note**: This API is not yet available in our sandbox - we are working to get it up and running as soon as possible.*",
-        "operationId" : "getCardDetailsById",
-        "parameters" : [ {
-          "name" : "x-dnbapi-jwt",
-          "in" : "header",
-          "required" : true,
-          "type" : "string",
-          "description" : "The JWT Token generated from Get API Token"
-        }, {
-          "name" : "x-api-key",
-          "in" : "header",
-          "required" : true,
-          "type" : "string",
-          "description" : "The API key from your app page in DNB Developer"
-        } ],
-        "responses" : {
-          "200" : {
-            "description" : "Request succeeded",
-            "schema" : {
-              "$ref" : "#/definitions/card"
-            }
-          },
-          "400" : {
-            "description" : "Bad Request",
-            "schema" : {
-              "$ref" : "#/definitions/error"
-            }
-          },
-          "401" : {
-            "description" : "Unauthorized",
-            "schema" : {
-              "$ref" : "#/definitions/error"
-            }
-          },
-          "403" : {
-            "description" : "Forbidden",
-            "schema" : {
-              "$ref" : "#/definitions/error"
-            }
-          },
-          "404" : {
-            "description" : "Not Found",
-            "schema" : {
-              "$ref" : "#/definitions/error"
-            }
-          }
-        }
-      },
-      "parameters" : [ {
-        "name" : "cardId",
-        "in" : "path",
-        "required" : true,
-        "type" : "string",
-        "description" : "The unique id of the card. Note that this is not the same as what is printed on a card, but an ID which can be fetched from Get card list.",
-        "x-example" : "12345678901"
-      } ]
-    },
-    "/cards/{cardId}/balance" : {
-      "get" : {
-        "tags" : [ "Cards", "Draft" ],
-        "summary" : "Get card balance",
-        "description" : "**Note:** This API endpoint is not yet available in our sandbox. We're working to get it out as soon as possible!\n\nReturns the balance of a card, if available.",
-        "parameters" : [ {
-          "name" : "x-dnbapi-jwt",
-          "in" : "header",
-          "required" : true,
-          "type" : "string",
-          "description" : "The JWT Token generated from Get API Token"
-        }, {
-          "name" : "x-api-key",
-          "in" : "header",
-          "required" : true,
-          "type" : "string",
-          "description" : "The API key from your app page in DNB Developer"
-        } ],
-        "responses" : {
-          "200" : {
-            "description" : "Status 200",
-            "schema" : {
-              "$ref" : "#/definitions/balance"
-            }
-          }
-        }
-      },
-      "parameters" : [ {
-        "name" : "cardId",
-        "in" : "path",
-        "required" : true,
-        "type" : "string",
-        "description" : "The unique id of the card. Note that this is not the same as what is printed on a card, but an ID which can be fetched from Get card list."
-      } ]
-    },
-    "/cards/{cardId}/block" : {
-      "put" : {
-        "tags" : [ "Cards", "Draft" ],
-        "summary" : "Block card",
-        "description" : "**Note:** This API endpoint is not yet available in our sandbox. We're working to get it out as soon as possible!\n\nThis API enables the end-customer to block a debit or credit card (not including Cresco Cards). To block means to not stop payments of going through on a card.",
-        "operationId" : "blockCard",
-        "parameters" : [ {
-          "name" : "x-dnbapi-jwt",
-          "in" : "header",
-          "required" : true,
-          "type" : "string",
-          "description" : "The JWT Token generated from Get API Token"
-        }, {
-          "name" : "x-api-key",
-          "in" : "header",
-          "required" : true,
-          "type" : "string",
-          "description" : "The API key from your app page in DNB Developer"
-        } ],
-        "responses" : {
-          "200" : {
-            "description" : "Card is blocked",
-            "schema" : {
-              "type" : "array",
-              "items" : {
-                "type" : "string"
-              }
-            },
-            "examples" : {
-              "application/json" : "ReasonCode"
-            }
-          },
-          "400" : {
-            "description" : "Bad Request",
-            "schema" : {
-              "$ref" : "#/definitions/error"
-            }
-          },
-          "401" : {
-            "description" : "Unauthorized",
-            "schema" : {
-              "$ref" : "#/definitions/error"
-            }
-          },
-          "403" : {
-            "description" : "Forbidden",
-            "schema" : {
-              "$ref" : "#/definitions/error"
-            }
-          },
-          "404" : {
-            "description" : "Not Found",
-            "schema" : {
-              "$ref" : "#/definitions/error"
-            }
-          }
-        }
-      },
-      "parameters" : [ {
-        "name" : "cardId",
-        "in" : "path",
-        "required" : true,
-        "type" : "string",
-        "x-example" : "12345678901"
-      } ]
-    },
-    "/cards/{cardId}/unblock" : {
-      "put" : {
-        "tags" : [ "Cards", "Draft" ],
-        "summary" : "Unblock card",
-        "description" : "**Note:** This API endpoint is not yet available in our sandbox. We're working to get it out as soon as possible!\n\nThis API enables the end-customer to unblock a card having a so-called \"soft block\", i.e. where `cardStatus` is `Blocked` and `unblockAllowed` is `true`. This will change that status of the card to `Unblocked`.",
-        "operationId" : "unblockCard",
-        "parameters" : [ {
-          "name" : "x-dnbapi-jwt",
-          "in" : "header",
-          "required" : true,
-          "type" : "string",
-          "description" : "The JWT Token generated from Get API Token"
-        }, {
-          "name" : "x-api-key",
-          "in" : "header",
-          "required" : true,
-          "type" : "string",
-          "description" : "The API key from your app page in DNB Developer"
-        } ],
-        "responses" : {
-          "200" : {
-            "description" : "Card is unblocked"
-          },
-          "400" : {
-            "description" : "Bad Request",
-            "schema" : {
-              "$ref" : "#/definitions/error"
-            }
-          },
-          "401" : {
-            "description" : "Unauthorized",
-            "schema" : {
-              "$ref" : "#/definitions/error"
-            }
-          },
-          "403" : {
-            "description" : "Forbidden",
-            "schema" : {
-              "$ref" : "#/definitions/error"
-            }
-          },
-          "404" : {
-            "description" : "Not Found",
-            "schema" : {
-              "$ref" : "#/definitions/error"
-            }
-          }
-        }
-      },
-      "parameters" : [ {
-        "name" : "cardId",
-        "in" : "path",
-        "required" : true,
-        "type" : "string",
-        "x-example" : "12345678901"
-      } ]
-    },
     "/currencies/{toCurrency}/convert/{fromCurrency}/{amount}" : {
       "parameters" : [ {
         "name" : "toCurrency",
@@ -986,7 +986,7 @@
     },
     "/currencies/{toCurrency}" : {
       "get" : {
-        "tags" : [ "Currencies", "Sandbox" ],
+        "tags" : [ "Currencies", "Sandbox", "6" ],
         "summary" : "Get currency rate list",
         "description" : "Returns a list of currency rates for the most common currencies, for the specified base currency. \n\n**NOTE**: The source data is based on NOK as the base currency. Any other base currency requires different source data, which is currently not available. ",
         "operationId" : "currencyList",
@@ -1054,7 +1054,7 @@
     },
     "/currencies/{base}/convert/{quote}/amount/{amount}" : {
       "get" : {
-        "tags" : [ "Currencies", "Sandbox" ],
+        "tags" : [ "Currencies", "Sandbox", "6" ],
         "summary" : "Currency conversion",
         "description" : "Convert amount from one currency to another - just like a currency calcuator. Note that this API is only available in Sandbox for now, meaning that the currencies returned are not updated.\n\n\n**NOTE**: The source data is based on NOK as the base currency. Because of this, one of the currencies (base or quote) _must be_ NOK. Conversion between any two currencies requires different source data, which is currently not available. ",
         "operationId" : "currencyConvert",
@@ -1117,7 +1117,7 @@
     },
     "/locations/branches" : {
       "get" : {
-        "tags" : [ "Location", "Sandbox" ],
+        "tags" : [ "Location", "Sandbox", "7" ],
         "summary" : "Get list of all DNB branches",
         "operationId" : "listBranches",
         "parameters" : [ {
@@ -1166,7 +1166,7 @@
     },
     "/locations/atms" : {
       "get" : {
-        "tags" : [ "Location", "Sandbox" ],
+        "tags" : [ "Location", "Sandbox", "7" ],
         "summary" : "Get list of all DNB ATMs",
         "operationId" : "listAtms",
         "parameters" : [ {
@@ -1215,7 +1215,7 @@
     },
     "/locations/branches/coordinates" : {
       "get" : {
-        "tags" : [ "Location", "Sandbox" ],
+        "tags" : [ "Location", "Sandbox", "7" ],
         "summary" : "Find nearest branch by coordinates",
         "description" : "**NOTE:** Currently uses _aerial distance_ only, not distance using roads, etc.\n\nReturns an array of ```branches```, as there may be more than one branch that is \"the nearest\".",
         "operationId" : "findBranchByCoordinates",
@@ -1276,7 +1276,7 @@
     "/locations/branch/findbyaddress" : { },
     "/locations/atms/coordinates" : {
       "get" : {
-        "tags" : [ "Location", "Sandbox" ],
+        "tags" : [ "Location", "Sandbox", "7" ],
         "summary" : "Find nearest ATM by coordinates",
         "description" : "**NOTE:** Currently uses _aerial distance_ only, not distance using roads, etc.\n\nReturns an array of ```atm```, as there may be more than one ATM that is \"the nearest\".",
         "operationId" : "findAtmByCoordinates",
@@ -1336,7 +1336,7 @@
     },
     "/locations/branches/{branchid}" : {
       "get" : {
-        "tags" : [ "Location", "Sandbox" ],
+        "tags" : [ "Location", "Sandbox", "7" ],
         "summary" : "Get branch details",
         "description" : "Contact information, opening hours, etc for a specific branch. See ```/locations/branches``` for getting all ```branches``` and their ids.",
         "operationId" : "getBranchDetails",
@@ -1391,7 +1391,7 @@
     },
     "/locations/branches/findbyaddress" : {
       "get" : {
-        "tags" : [ "Location", "Sandbox" ],
+        "tags" : [ "Location", "Sandbox", "7" ],
         "summary" : "Find nearest branch by address",
         "description" : "**NOTE:** Not planned for the first phase. See ```/locations/branches``` and ```/locations/Atms```. Needs an ```address```(or smiliar data) as a ```POST``` request.\n\nReturns an array of ```branches```, as there may be more than one branch that is \"the nearest\".\n",
         "operationId" : "findBranchByAddress",
@@ -1613,8 +1613,7 @@
           "type" : "string",
           "minLength" : 11,
           "maxLength" : 11,
-          "pattern" : "^\\d{11}$",
-          "example" : "12345678901"
+          "example" : "12001100000"
         },
         "year" : {
           "type" : "string",
@@ -1726,7 +1725,7 @@
           "description" : "The unique account number",
           "minLength" : 11,
           "maxLength" : 11,
-          "example" : "'29105573083'"
+          "example" : "'12001100000'"
         },
         "productName" : {
           "type" : "string",
@@ -1777,7 +1776,7 @@
       "properties" : {
         "balance" : {
           "type" : "number",
-          "description" : "The current balance of a debit account or credit card. Does not take into account due payments, and is not a \"safe to spend\" amount. For credit cards, it does not include the credit gotten from the bank.",
+          "description" : "The current balance of a debit account or  a credit card. Does not take into account due payments, and is not a \"safe to spend\" amount. For credit cards, it does not include the credit gotten from the bank.",
           "example" : 90000.01
         },
         "lastBalanceChange" : {
@@ -1809,28 +1808,35 @@
       "properties" : {
         "transactionId" : {
           "type" : "string",
-          "example" : "12345"
+          "description" : "The unique ID of that transaction",
+          "example" : "13829138"
         },
         "accountNumber" : {
-          "type" : "string"
+          "type" : "string",
+          "description" : "If the transaction was done on an account, this is the account number of that account.",
+          "example" : "12001100000"
         },
         "transactionTimestamp" : {
           "type" : "string",
-          "format" : "date-time"
+          "description" : "Time of transaction formated by ISO 8601",
+          "example" : "21:32:01"
         },
         "dateBooking" : {
           "type" : "string",
           "format" : "date",
-          "example" : "2018-12-31"
+          "description" : "The date that the transaction went throught",
+          "example" : "20180316"
         },
         "dateValue" : {
           "type" : "string",
           "format" : "date",
-          "example" : "2018-12-31"
+          "description" : "The date on which the value is calcuated from (especially relevant for foreign transactions)",
+          "example" : "20180316"
         },
         "dateReservation" : {
           "type" : "string",
-          "format" : "date"
+          "format" : "date",
+          "description" : "The date when the transaction was reserved on the card/account"
         },
         "originalCurrencyValue" : {
           "type" : "number",
@@ -1857,14 +1863,14 @@
         },
         "status" : {
           "type" : "string",
-          "description" : "Booked, reserved, and, if this is to be merged with ```payment```: Completed (or something similar, to indicate that this has, in fact, been processed and finalized)",
+          "description" : "The status of the transaction. A booked transaction has already gone through, meaning that the money has gone out of the creditor's account and into the recieving account.\nA reserved transaction has beed reserved on the debitors account, but not yet sent to the recievers account.",
           "default" : "BOOKED",
           "enum" : [ "BOOKED", "RESERVED" ],
           "example" : "BOOKED"
         },
         "description" : {
           "type" : "string",
-          "description" : "Descriptive text for the transaction.",
+          "description" : "Descriptive text for the transaction, defined by the customer",
           "example" : "Lunch at The Restaurant at the End of the Universe"
         },
         "merchantName" : {
@@ -1877,11 +1883,7 @@
         },
         "message" : {
           "type" : "string",
-          "description" : "Merge with ```kid```? See also ```paymentInitiation```and ```payment```."
-        },
-        "kid" : {
-          "type" : "string",
-          "description" : "Merge with ```message```? Merge with ```kid```? See also ```paymentInitiation```and ```payment```."
+          "description" : "Customer defined message attached to transaction"
         },
         "paymentId" : {
           "type" : "string"
@@ -1890,7 +1892,8 @@
           "type" : "string"
         },
         "cardId" : {
-          "type" : "string"
+          "type" : "string",
+          "description" : "If the transaction was done directly on a card (such as with credit cards), this is the ID of the card associated with the transaction."
         },
         "details" : {
           "type" : "array",
@@ -1906,6 +1909,95 @@
         }
       },
       "description" : "A ```transaction``` is a completed operation between two accounts, in contrast to ```payment```, which is planned, but not completed.\n\nThe same ```transaction``` is used for all types of transactions: DNB-only account transactions, domestic transactions, international transactions, card transactions, etc. Some transaction types have more fields and data than others. A developer does not need to know about different transaction types when retrieving them, this is ."
+    },
+    "card" : {
+      "type" : "object",
+      "required" : [ "accountNumber", "cardHolderName", "cardId", "cardStatus", "cardType", "customerId", "maskedCardNumber", "productName" ],
+      "properties" : {
+        "cardId" : {
+          "type" : "string",
+          "description" : "The ID of the card",
+          "example" : "TQJQ95214468J85O"
+        },
+        "maskedCardNumber" : {
+          "type" : "string",
+          "description" : "The masked card number (what's printed on your actual card), but only displaying the four last digits.",
+          "example" : "xxxx-xxxx-xxxx-1234"
+        },
+        "customerId" : {
+          "type" : "string",
+          "description" : "The customer id of the card holder",
+          "example" : "19023959041"
+        },
+        "cardHolderName" : {
+          "type" : "string",
+          "description" : "The name of the card holder",
+          "example" : "Bruce Wayne"
+        },
+        "cardType" : {
+          "type" : "string",
+          "description" : "The type of card",
+          "default" : "DEBIT",
+          "enum" : [ "DEBIT", "CREDIT" ],
+          "example" : "DEBIT"
+        },
+        "productName" : {
+          "type" : "string",
+          "description" : "The product group of the card, such as \"VISA\" or \"MASTERCARD\".",
+          "example" : "VISA"
+        },
+        "accountNumber" : {
+          "type" : "string",
+          "description" : "The account number that the card is linked to",
+          "minLength" : 11,
+          "maxLength" : 11,
+          "example" : "12089146372"
+        },
+        "cardStatus" : {
+          "type" : "string",
+          "description" : "The status of the card",
+          "default" : "ACTIVE",
+          "enum" : [ "ACTIVE", "NOTACTIVE", "BLOCKED" ],
+          "example" : "BLOCKED"
+        },
+        "blockingInfo" : {
+          "required" : [ "performedBy", "unblockAllowed" ],
+          "type" : "object",
+          "properties" : {
+            "performedBy" : {
+              "type" : "string",
+              "description" : "Who made the change (B - bank/C - customer)",
+              "enum" : [ "B", "C" ],
+              "example" : "B"
+            },
+            "timestamp" : {
+              "type" : "string",
+              "description" : "Timestamp of the action performed as defined by ISO 8601",
+              "example" : "2017-03-01 11:32:09"
+            },
+            "blockAllowed" : {
+              "type" : "boolean",
+              "description" : "Can the card be blocked by the customer?",
+              "example" : true
+            },
+            "unblockAllowed" : {
+              "type" : "boolean",
+              "description" : "Can the card be unblocked by the customer?",
+              "example" : true
+            }
+          }
+        },
+        "created" : {
+          "type" : "string",
+          "description" : "When was the card created?",
+          "example" : "2017-03-01 11:32:09"
+        },
+        "lastChanged" : {
+          "type" : "string",
+          "description" : "When was the last change on the card",
+          "example" : "2017-03-01 11:32:09"
+        }
+      }
     },
     "paymentInitiation" : {
       "type" : "object",
@@ -2013,93 +2105,6 @@
         }
       },
       "description" : "**NOTE:** May be completely merged with ```transaction```.\n\nA ```payment``` is a planned payment/transaction that has not yet been carried out.\n\nTODO: There is no ```message```or ```kid```, as in ```paymentInitiation```and ```transaction```. Check this.\n\nDetails about a payment. Used by:\n* /payments/due/{accountNumber}: Returning a list of payments, with _empty_ PaymentDetails\n* /payments/due/{accountNumber}/details: Returning a list of payments, with PaymentDetails\n\n"
-    },
-    "card" : {
-      "type" : "object",
-      "required" : [ "accountNumber", "cardHolderName", "cardId", "cardStatus", "cardType", "customerId", "maskedCardNumber" ],
-      "properties" : {
-        "cardId" : {
-          "type" : "string",
-          "description" : "The ID of the card"
-        },
-        "maskedCardNumber" : {
-          "type" : "string",
-          "description" : "The masked card number (what's printed on your actual card), but only displaying the four last digits.",
-          "example" : "xxxx-xxxx-xxxx-1234"
-        },
-        "customerId" : {
-          "type" : "string",
-          "description" : "The id of the card holder",
-          "example" : "FX040827979925254X"
-        },
-        "cardHolderName" : {
-          "type" : "string",
-          "description" : "The name of the card holder",
-          "example" : "JOHN DOE"
-        },
-        "cardType" : {
-          "type" : "string",
-          "description" : "The type of card",
-          "default" : "DEBIT",
-          "enum" : [ "DEBIT", "CREDIT" ],
-          "example" : "DEBIT"
-        },
-        "productName" : {
-          "type" : "string",
-          "description" : "The product group of the card"
-        },
-        "accountNumber" : {
-          "type" : "string",
-          "description" : "The account number that the card is linked to",
-          "minLength" : 11,
-          "maxLength" : 11,
-          "example" : "12345678901"
-        },
-        "cardStatus" : {
-          "type" : "string",
-          "description" : "The status of the card",
-          "default" : "ACTIVE",
-          "enum" : [ "ACTIVE", "NOTACTIVE", "BLOCKED" ],
-          "example" : "BLOCKED"
-        },
-        "blockingInfo" : {
-          "required" : [ "performedBy", "unblockAllowed" ],
-          "type" : "object",
-          "properties" : {
-            "performedBy" : {
-              "type" : "string",
-              "description" : "Who made the change (B - bank/C - customer)",
-              "enum" : [ "B", "C" ],
-              "example" : "B"
-            },
-            "timestamp" : {
-              "type" : "string",
-              "description" : "Timestamp of the action performed as defined by ISO 8601",
-              "example" : "2017-03-01 11:32:09"
-            },
-            "blockAllowed" : {
-              "type" : "boolean",
-              "description" : "Can the card be blocked by the customer?",
-              "example" : true
-            },
-            "unblockAllowed" : {
-              "type" : "boolean",
-              "description" : "Can the card be unblocked by the customer?",
-              "example" : true
-            }
-          }
-        },
-        "created" : {
-          "type" : "string",
-          "description" : "When was the card created?",
-          "example" : "2017-03-01 11:32:09"
-        },
-        "lastChanged" : {
-          "type" : "string",
-          "description" : "When was the last change on the card",
-          "example" : "2017-03-01 11:32:09"
-        }
-      }
     },
     "currencyRate" : {
       "type" : "object",
