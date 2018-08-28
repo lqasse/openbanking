@@ -203,13 +203,13 @@
           "in" : "header",
           "required" : true,
           "type" : "string",
-          "description" : "The JWT Token generated from Get API Token"
+          "description" : "The JWT Token generated from Get API Token."
         }, {
           "name" : "x-api-key",
           "in" : "header",
           "required" : true,
           "type" : "string",
-          "description" : "The API key from your app page in DNB Developer"
+          "description" : "The API key from your app page in DNB Developer."
         } ],
         "responses" : {
           "200" : {
