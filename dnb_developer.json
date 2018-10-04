@@ -443,7 +443,7 @@
           }
         } ],
         "responses" : {
-          "201" : {
+          "200" : {
             "description" : "Created",
             "schema" : {
               "type" : "object",
@@ -500,7 +500,7 @@
           "204" : {
             "description" : "Gone forever! No further information needed or provided.",
             "schema" : {
-              "$ref" : "#/definitions/error"
+              "$ref" : ""
             }
           },
           "400" : {
