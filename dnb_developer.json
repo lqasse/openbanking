@@ -80,13 +80,13 @@
             }
           },
           "400" : {
-            "description" : "Status 400",
+            "description" : "Bad Request",
             "schema" : {
               "$ref" : "#/definitions/error"
             }
           },
           "404" : {
-            "description" : "Status 404",
+            "description" : "Not Found",
             "schema" : {
               "$ref" : "#/definitions/error"
             }
@@ -179,13 +179,13 @@
             }
           },
           "400" : {
-            "description" : "Status 400",
+            "description" : "Bad Request",
             "schema" : {
               "$ref" : "#/definitions/error"
             }
           },
           "404" : {
-            "description" : "Status 404",
+            "description" : "Not Found",
             "schema" : {
               "$ref" : "#/definitions/error"
             }
@@ -434,7 +434,7 @@
           }
         } ],
         "responses" : {
-          "201" : {
+          "200" : {
             "description" : "Created",
             "schema" : {
               "type" : "object",
@@ -491,23 +491,23 @@
           "204" : {
             "description" : "Gone forever! No further information needed or provided.",
             "schema" : {
-              "$ref" : "#/definitions/error"
+              "$ref" : ""
             }
           },
           "400" : {
-            "description" : "Status 400",
+            "description" : "Bad Request",
             "schema" : {
               "$ref" : "#/definitions/error"
             }
           },
           "401" : {
-            "description" : "Status 401",
+            "description" : "Unauthorized",
             "schema" : {
               "$ref" : "#/definitions/error"
             }
           },
           "403" : {
-            "description" : "Status 403",
+            "description" : "Forbidden",
             "schema" : {
               "$ref" : "#/definitions/error"
             }
