@@ -544,7 +544,7 @@
           "in" : "body",
           "required" : true,
           "schema" : {
-            "$ref" : "#/definitions/paymentInitiation"
+            "$ref" : "#/definitions/paymentUpdation"
           }
         } ],
         "responses" : {
@@ -1942,6 +1942,38 @@
         }
       },
       "description" : "The payment initiation object can be used for three types of payments, which should be specified in the ```type``` property:\n* ```KID```: The customer identification number specified by the recieving end, often described in the invioce. \n* ```MESSAGE```: A payment just having a text message attached with it.\n* ```TRANSFER```: A payment going between two DNB accounts having the same owner. \n\nNot including the \"straksbetaling\" (imediate payment) flag, as this will be the default.\n\nPayment initiator: Part of the context object, but kept here too for reference. "
+    },
+    "paymentUpdation" : {
+      "type" : "object",
+      "required" : [ "amount", "debitAccountNumber", "requestedExecutionDate", "status" ],
+      "properties" : {
+        "status" : {
+          "type" : "string",
+          "description" : "The payment type: KID, message or transfer. A transfer is a payment between two accounts with the same owner, a message is an outgoing payment with just a descriptive message and KID is a payment with a KID (customer identification) number.",
+          "default" : "KID",
+          "enum" : [ "KID", "MESSAGE", "TRANSFER" ],
+          "example" : "578838425335143"
+        },
+        "debitAccountNumber" : {
+          "type" : "string",
+          "description" : "The account to send money.",
+          "minLength" : 11,
+          "maxLength" : 11,
+          "pattern" : "^\\d{11}$",
+          "example" : "12087840415"
+        },
+        "amount" : {
+          "type" : "number",
+          "example" : 1500.01,
+          "description" : "The amount that needs to be payed"
+        },
+        "requestedExecutionDate" : {
+          "type" : "string",
+          "format" : "date-time",
+          "example" : "2018-12-31",
+          "description" : "The Date on which payment needs to be made"
+        }
+      }
     },
     "paymentDetails" : {
       "type" : "object",
