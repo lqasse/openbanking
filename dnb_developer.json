@@ -544,7 +544,7 @@
           "in" : "body",
           "required" : true,
           "schema" : {
-            "$ref" : "#/definitions/paymentUpdation"
+            "$ref" : "#/definitions/updatePayment"
           }
         } ],
         "responses" : {
@@ -1943,7 +1943,7 @@
       },
       "description" : "The payment initiation object can be used for three types of payments, which should be specified in the ```type``` property:\n* ```KID```: The customer identification number specified by the recieving end, often described in the invioce. \n* ```MESSAGE```: A payment just having a text message attached with it.\n* ```TRANSFER```: A payment going between two DNB accounts having the same owner. \n\nNot including the \"straksbetaling\" (imediate payment) flag, as this will be the default.\n\nPayment initiator: Part of the context object, but kept here too for reference. "
     },
-    "paymentUpdation" : {
+    "updatePayment" : {
       "type" : "object",
       "required" : [ "amount", "debitAccountNumber", "requestedExecutionDate", "status" ],
       "properties" : {
