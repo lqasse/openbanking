@@ -22,7 +22,7 @@
   "consumes" : [ "application/json" ],
   "produces" : [ "application/json" ],
   "paths" : {
-    "/api/testCustomers" : {
+    "/testCustomers" : {
       "get" : {
         "tags" : [ "Test_Customers", "Draft", "100" ],
         "summary" : "Test Customers",
@@ -51,7 +51,7 @@
         }
       }
     },
-    "/api/token/" : {
+    "/token/" : {
       "get" : {
         "tags" : [ "API", "Draft", "101" ],
         "summary" : "Get API token",
