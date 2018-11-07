@@ -1062,11 +1062,11 @@
         "x-example" : "NOK"
       } ]
     },
-    "/currencies/{base}/convert/{quote}/amount/{amount}" : {
+    "/currencies/{base}/convert/{quote}" : {
       "get" : {
         "tags" : [ "Currencies", "Sandbox", "6" ],
         "summary" : "Currency conversion",
-        "description" : "Convert amount from one currency to another - just like a currency calcuator. Note that this API is only available in Sandbox for now, meaning that the currencies returned are not updated.\n\n\n**NOTE**: The source data is based on NOK as the base currency. Because of this, one of the currencies (base or quote) _must be_ NOK. Conversion between any two currencies requires different source data, which is currently not available. ",
+        "description" : "Returns the conversion rate from one currency to another. Note that this API is only available in Sandbox for now, meaning that the currencies returned are not updated.\n\n\n**NOTE**: The source data is based on NOK as the base currency. Because of this, one of the currencies (base or quote) _must be_ NOK. Conversion between any two currencies requires different source data, which is currently not available. ",
         "operationId" : "currencyConvert",
         "parameters" : [ {
           "name" : "x-api-key",
@@ -1115,11 +1115,6 @@
         "type" : "string"
       }, {
         "name" : "quote",
-        "in" : "path",
-        "required" : true,
-        "type" : "string"
-      }, {
-        "name" : "amount",
         "in" : "path",
         "required" : true,
         "type" : "string"
