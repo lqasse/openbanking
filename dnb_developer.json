@@ -2117,15 +2117,31 @@
         "currency" : {
           "type" : "string",
           "description" : "ISO 4217: alpha 3-letter upcase: https://www.iso.org/iso-4217-currency-codes.html",
-          "default" : "NOK",
+          "minLength" : 3,
+          "maxLength" : 3,
+          "example" : "USD"
+        },
+        "currency" : {
+          "type" : "string",
+          "description" : "ISO 4217: alpha 3-letter upcase: https://www.iso.org/iso-4217-currency-codes.html",
           "minLength" : 3,
           "maxLength" : 3,
           "example" : "NOK"
+        },
+        "country" : {
+          "type" : "string",
+          "description" : "Country corresponding to the currency.",
+          "example" : "US"
         },
         "unit" : {
           "type" : "string",
           "description" : "1 or 100?",
           "example" : "1"
+        },
+        "updatedDate" : {
+          "type" : "string",
+          "description" : "Date when the rate was last refreshed.",
+          "example" : "2018-11-13 09:00:00.0"
         },
         "buyRateTransfer" : {
           "type" : "number",
