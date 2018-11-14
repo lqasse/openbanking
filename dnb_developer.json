@@ -1024,28 +1024,16 @@
               }
             }
           },
-          "400" : {
-            "description" : "Bad Request",
+          "4XX" : {
+            "description" : "Client side error",
             "schema" : {
-              "$ref" : "#/definitions/error"
+              "$ref" : "#/definitions/errorv2"
             }
           },
-          "401" : {
-            "description" : "Unauthorized",
+          "5XX" : {
+            "description" : "Server side error",
             "schema" : {
-              "$ref" : "#/definitions/error"
-            }
-          },
-          "403" : {
-            "description" : "Forbidden",
-            "schema" : {
-              "$ref" : "#/definitions/error"
-            }
-          },
-          "404" : {
-            "description" : "Not Found",
-            "schema" : {
-              "$ref" : "#/definitions/error"
+              "$ref" : "#/definitions/errorv2"
             }
           }
         }
@@ -2455,6 +2443,27 @@
         }
       },
       "description" : "The HTTP status code (```httpStatus```) is the main classifier. A DNB-specific ```errorNumber```is also provided as a lookup reference. \n\nThe ```errorDocumentation``` is a URI to further information about the endpoint, with uesful infomration about correct usage.\n\nThe ```errorDetails```is specific information about the one or more errors that have occurred.\n\n**Note:** We strive to offer the best possible information about all errors. This depends on the information offered by the backend systems, and in some cases there is limited information available from the underlying solutions. In these cases, the errors may contain empty fields, and/or information that is difficult to interpret. In cases where the error information needs improvement, please let us know: developer@dnb.no. \n\nExample ```error``` (TODO: Work in progress: May need an update):\n```\n{\n  \"errorDocumentation\": \"https://developer.dnb.no/something-useful-goes-here/\",\n  \"errorDetails\": [\n    {\n      \"errorNumber\": \"123450\",\n      \"errorField\": \"accountNumber\",\n      \"errorDescription\": \"accountNumber must be digits only\"\n    },\n    {\n      \"errorNumber\": \"123451\",\n      \"errorField\": \"dateFrom\",\n      \"errorDescription\": \"dateFrom must be in ISO8601 date format\"\n    }\n  ]\n}\n```"
+    },
+    "errorv2" : {
+      "type" : "object",
+      "properties" : {
+        "message" : {
+          "type" : "string",
+          "description" : "Message corresponding to the HTTP error status.",
+          "example" : "Internal server error"
+        },
+        "status" : {
+          "type" : "int",
+          "description" : "HTTP error status.",
+          "example" : "500"
+        },
+        "timestamp" : {
+          "type" : "long",
+          "description" : "UNIX Epoch time.",
+          "example" : "1542195089528"
+        }
+      },
+      "description" : "The message returned in case of errors."
     },
     "headerLinks" : {
       "type" : "object",
