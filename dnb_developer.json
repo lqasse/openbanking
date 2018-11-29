@@ -1895,13 +1895,13 @@
           "description" : "The Date on which payment needs to be made"
         },
         "country" : {
-          "type" : "String",
+          "type" : "string",
           "example" : "NO",
           "minLength" : 2,
           "maxLength" : 2
         },
         "currency" : {
-          "type" : "String",
+          "type" : "string",
           "example" : "NOK",
           "minLength" : 3,
           "maxLength" : 3,
